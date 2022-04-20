@@ -12,6 +12,13 @@
         </div>
     </div>
     <div class="row">
+        <div class="my-4">
+            <a href="/admin/{{$iblock->id}}/delete">
+                <button class="btn btn-danger">delete</button>
+            </a>
+        </div>
+    </div>
+    <div class="row">
         <div class="card">
             <div class="card-body">
                 <form action="/admin/{{$iblock->id}}/iblockedit" method="post">
@@ -25,14 +32,14 @@
                     </div>
                 </form>
                 @foreach($iblock->properties as $prop)
-                <form>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">{{$prop->name}}</label>
-                    </div>
-                    <div class="mb-3">
-                        <button type="submit" class="btn btn-danger">удалить</button>
-                    </div>
-                </form>
+                    <form>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">{{$prop->name}}</label>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-danger">удалить</button>
+                        </div>
+                    </form>
                 @endforeach
                 <form action="/admin/{{$iblock->id}}/propertyadd" method="post">
                     @csrf

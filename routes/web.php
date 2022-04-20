@@ -27,6 +27,8 @@ Route::get('/detail/{id}', [App\Http\Controllers\HomeController::class, 'detail'
 
 Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index']);
 Route::get('/admin/addiblock', [App\Http\Controllers\AdminController::class, 'addiblockform']);
+Route::get("/admin/{iblock_element}/editelement", [App\Http\Controllers\AdminController::class, 'editelementform']);
+Route::post("/admin/{iblock_element}/editelement", [App\Http\Controllers\AdminController::class, 'editelement']);
 
 Route::post('/admin/addiblock', [App\Http\Controllers\AdminController::class, 'addiblock']);
 Route::get('/admin/{iblock}/elementlist', [App\Http\Controllers\AdminController::class, 'elementlist']);
@@ -35,4 +37,6 @@ Route::post('/admin/{iblock}/iblockedit', [App\Http\Controllers\AdminController:
 Route::post('/admin/{iblock}/propertyadd', [App\Http\Controllers\AdminController::class, 'propertyadd']);
 Route::get('/admin/{iblock}/addelement', [App\Http\Controllers\AdminController::class, 'addelementform']);
 Route::post('/admin/{iblock}/addelement', [App\Http\Controllers\AdminController::class, 'addelement']);
-Route::get("admin/{iblock_element}/deleteelement", [App\Http\Controllers\AdminController::class, 'deleteelement']);
+Route::get('/admin/{iblock}/delete', [App\Http\Controllers\AdminController::class, 'deleteiblock']);
+
+Route::get("/admin/{iblock_element}/deleteelement", [App\Http\Controllers\AdminController::class, 'deleteelement']);

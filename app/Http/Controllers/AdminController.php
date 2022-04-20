@@ -64,6 +64,12 @@ class AdminController extends Controller
         return redirect("/admin/" . $iblock->id . '/iblockedit');
     }
 
+    public function deleteiblock(iblock $iblock)
+    {
+        $iblock->delete();
+        return redirect("/admin/");
+    }
+
     public function propertyadd(Request $request, iblock $iblock)
     {
         $property = new iblock_property();
@@ -102,5 +108,23 @@ class AdminController extends Controller
         return redirect("/admin/");
 
     }
+
+    public function editelementform(iblock_element $iblock_element)
+    {
+        return view('admin/editelement', compact("iblock_element"));
+    }
+
+    public function editelement(iblock_element $iblock_element, Request $request)
+    {
+        $iblock_element->name = $request->name;
+        $props = $iblock_element->iblock->getPropWithParrents();
+        $iblock_element->update();
+        foreach ($props as $prop) {
+            $prop->propvalue[0]->value = $request[$prop->id];
+            $prop->propvalue[0]->update();
+        }
+        return redirect("/admin/");
+    }
+
 
 }

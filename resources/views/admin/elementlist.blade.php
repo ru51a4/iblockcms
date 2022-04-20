@@ -42,9 +42,13 @@
                             @endforeach
                         </ul>
                     </a>
+                    <a href="/admin/{{$el->id}}/editelement">
+                        <button class="btn btn-primary">edit</button>
+                    </a>
                     <a href="/admin/{{$el->id}}/deleteelement">
                         <button class="btn btn-danger">удалить</button>
                     </a>
+
                 </div>
             </div>
             @endforeach
