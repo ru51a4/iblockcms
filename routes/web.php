@@ -23,6 +23,7 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
 Route::get('/home/{id}', [App\Http\Controllers\HomeController::class, 'index']);
+Route::get('/detail/{id}', [App\Http\Controllers\HomeController::class, 'detail']);
 
 Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index']);
 Route::get('/admin/addiblock', [App\Http\Controllers\AdminController::class, 'addiblockform']);

@@ -44,4 +44,9 @@ class HomeController extends Controller
 
         return view('home', compact("treeKeys", "resTree", "id"));
     }
+
+    public function detail($id)
+    {
+        dd(Iblocks::ElementsGetList([$id])[0]->toArray());
+    }
 }

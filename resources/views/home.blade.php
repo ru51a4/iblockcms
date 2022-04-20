@@ -47,7 +47,7 @@
                 <ul>
                     @foreach($resTree[$id] as $key => $el)
                         @if(isset($el["name"]))
-                            <li>{{$el["name"]}}
+                            <li><a href="/detail/{{$el["id"]}}">{{$el["name"]}}</a>
                                 <ul>
                                     @foreach($el["prop"] as $key => $prop)
                                         <li>{{$key}} - {{$prop}}</li>

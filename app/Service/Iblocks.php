@@ -39,12 +39,11 @@ class Iblocks
     {
         $stack = [$iblockID];
         $res = [];
-        $getChilds = function ($id, &$c) use (&$getChilds, &$stack, $elId) {
-            $iblock = iblock::find($id);
+        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId) {
             $c[$iblock->id]["key"] = $iblock->name;
             $c[$iblock->id]["path"] = $stack;
             //
-            if ($id == $elId || !$elId) {
+            if ($iblock->id == $elId || !$elId) {
                 $els = $iblock->elements;
                 foreach ($els as $el) {
                     $t = $el->toArray();
@@ -56,15 +55,21 @@ class Iblocks
                 }
             }
             //
-            $childs = iblock::where("parrent_id", "=", $id)->get();
+            $childs = iblock::where("parrent_id", "=", $iblock->id)->get();
             foreach ($childs as $child) {
                 $stack[] = $child->id;
-                $getChilds($child->id, $c[$iblock->id]);
+                $getChilds($child, $c[$iblock->id]);
                 array_pop($stack);
             }
         };
 
-        $getChilds($iblockID, $res);
+        $iblock = iblock::find($iblockID);
+        $getChilds($iblock, $res);
         return $res;
+    }
+
+    public static function ElementsGetList($ids)
+    {
+        return iblock_element::with("propvalue.prop")->whereIn('id', $ids)->get();
     }
 }
