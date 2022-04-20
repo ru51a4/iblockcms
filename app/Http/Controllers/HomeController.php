@@ -47,6 +47,6 @@ class HomeController extends Controller
 
     public function detail($id)
     {
-        dd(Iblocks::ElementsGetList([$id])[0]->toArray());
+        dd(Iblocks::ElementsGetList([$id])[0]);
     }
 }

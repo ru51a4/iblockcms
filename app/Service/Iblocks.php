@@ -70,6 +70,16 @@ class Iblocks
 
     public static function ElementsGetList($ids)
     {
-        return iblock_element::with("propvalue.prop")->whereIn('id', $ids)->get();
+        $els = iblock_element::whereIn('id', $ids)->get();
+        $res = [];
+        foreach ($els as $el) {
+            $t = $el->toArray();
+            $t["prop"] = [];
+            foreach ($el->propvalue as $prop) {
+                $t["prop"][$prop->prop->name] = $prop->value;
+            }
+            $res[] = $t;
+        }
+        return $res;
     }
 }
