@@ -28,9 +28,8 @@ class HomeController extends Controller
 
         $els = Iblocks::GetList(1, $id);
         $res = Iblocks::treeToArray($els);
-        $keys = $res["keys"];
-        $tree = $res["tree"];
-        return view('home', compact("keys", "tree", "id"));
+        $tree = $res;
+        return view('home', compact("tree", "id"));
     }
 
     public function detail($id)

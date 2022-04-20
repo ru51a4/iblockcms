@@ -85,20 +85,17 @@ class Iblocks
 
     public static function treeToArray($tree)
     {
-        $treeKeys = [];
         $resTree = [];
         $getTree = function ($tree, $c) use (&$getTree, &$treeKeys, &$resTree) {
             foreach ($tree as $key => $el) {
                 //key - iblock_id
                 if (isset($el["key"])) { //if curr iblock
-                    $treeKeys[$key]["key"] = $el["key"];
-                    $treeKeys[$key]["lvl"] = count($el["path"]);
                     $resTree[$key] = $c[$key];
                     $getTree($el, $c[$key]);
                 }
             }
         };
         $getTree($tree, $tree);
-        return ["tree" => $resTree, "keys" => $treeKeys];
+        return $resTree;
     }
 }

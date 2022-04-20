@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-6 m-2">
             @foreach($tree[$id]["path"] as $item)
-                <a href="/home/{{$item}}/">{{$keys[$item]["key"]}}</a>
+                <a href="/home/{{$item}}/">{{$tree[$item]["key"]}}</a>
             @endforeach
         </div>
     </div>
@@ -12,16 +12,16 @@
         <div class="col-md-4">
             <div class="card">
                 <ul>
-                    @foreach($keys as $key => $el)
+                    @foreach($tree as $key => $el)
                         @if($key == $id)
-                            <li>  @for($i =1; $i<= $el["lvl"]; $i++)
+                            <li>  @for($i =1; $i<= count($el["path"]); $i++)
                                     -
                                 @endfor
                                 <b>{{$el["key"]}}</b>
                             </li>
                         @else
                             <li>
-                                @for($i =1; $i<= $el["lvl"]; $i++)
+                                @for($i =1; $i<= count($el["path"]); $i++)
                                     -
                                 @endfor
                                 <a href="/home/{{$key}}"> {{$el["key"]}}</a></li>
