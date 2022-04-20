@@ -111,7 +111,18 @@ class AdminController extends Controller
 
     public function editelementform(iblock_element $iblock_element)
     {
-        return view('admin/editelement', compact("iblock_element"));
+        $props = $iblock_element->iblock->getPropWithParrents();
+
+        $resProp = [];
+
+        foreach ($props as $prop) {
+            $t = $prop->toArray();
+            $prop = iblock_prop_value::where("el_id", "=", $iblock_element->id)->where("prop_id", "=", $prop->id)->first();
+            $t["value"] = (isset($prop->value)) ? $prop->value : "";
+
+            $resProp[] = $t;
+        }
+        return view('admin/editelement', compact("iblock_element", "resProp"));
     }
 
     public function editelement(iblock_element $iblock_element, Request $request)
@@ -120,8 +131,17 @@ class AdminController extends Controller
         $props = $iblock_element->iblock->getPropWithParrents();
         $iblock_element->update();
         foreach ($props as $prop) {
-            $prop->propvalue[0]->value = $request[$prop->id];
-            $prop->propvalue[0]->update();
+            $p = iblock_prop_value::where("el_id", "=", $iblock_element->id)->where("prop_id", "=", $prop->id)->first();
+            if (isset($p)) {
+                $p->value = $request[$prop->id];
+                $p->update();
+            } else {
+                $t = new iblock_prop_value();
+                $t->prop_id = $prop->id;
+                $t->el_id = $iblock_element->id;
+                $t->value = $request[$prop->id];
+                $t->save();
+            }
         }
         return redirect("/admin/");
     }
