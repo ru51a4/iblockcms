@@ -31,19 +31,21 @@
             </div>
         </div>
         <div class="col-md-7">
-            <div class="row">
-                @foreach($tree[$id] as $key => $el)
-                    @if(isset($el["key"]))
-                        <div class="card col-2 p-3">
-                            <a href="/home/{{$key}}">
-                                <span>{{$el["key"]}}</span>
-                            </a>
-                        </div>
-                    @endif
-                @endforeach
-            </div>
+            @if($sectionIsset != 0)
+                <div class="row mb-4">
+                    @foreach($tree[$id] as $key => $el)
+                        @if(isset($el["key"]))
+                            <div class="card col-2 p-3">
+                                <a href="/home/{{$key}}">
+                                    <span>{{$el["key"]}}</span>
+                                </a>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            @endif
 
-            <div class="row mt-4">
+            <div class="row">
                 <ul>
                     @foreach($tree[$id] as $key => $el)
                         @if(isset($el["name"]))
