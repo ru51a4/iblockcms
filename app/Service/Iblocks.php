@@ -111,9 +111,10 @@ class Iblocks
     {
         $pp = iblock_prop_value::where("el_id", "=", $elId)->get();
         foreach ($pp as $p) {
-            $name = $p->prop->name;
-            $p->value = $props[$name];
-            $p->update();
+            if (isset($props[$p->prop->name])) {
+                $p->value = $props[$p->prop->name];
+                $p->update();
+            }
         }
     }
 
