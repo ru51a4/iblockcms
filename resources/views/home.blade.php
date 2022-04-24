@@ -47,7 +47,7 @@
 
             <div class="row">
                 <ul>
-                    @foreach($tree[$id] as $key => $el)
+                    @foreach($tree[$id]["elements"] as $key => $el)
                         @if(isset($el["name"]))
                             <li><a href="/detail/{{$el["id"]}}">{{$el["name"]}}</a>
                                 <ul>

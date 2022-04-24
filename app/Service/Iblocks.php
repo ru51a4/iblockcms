@@ -51,7 +51,7 @@ class Iblocks
                     foreach ($el->propvalue as $prop) {
                         $t["prop"][$prop->prop->name] = $prop->value;
                     }
-                    $c[$iblock->id][] = $t;
+                    $c[$iblock->id]["elements"][] = $t;
                 }
             }
             //
