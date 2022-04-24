@@ -25,12 +25,11 @@ class HomeController extends Controller
      */
     public function index($id = 1)
     {
-
         $els = Iblocks::GetList(1, $id);
         $res = Iblocks::treeToArray($els);
         $tree = $res;
         $countSection = array_filter($tree[$id], function ($item) {
-           return isset($item["key"]);
+            return isset($item["key"]);
         });
         $sectionIsset = count($countSection);
         return view('home', compact("tree", "id", "sectionIsset"));

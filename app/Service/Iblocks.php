@@ -83,6 +83,40 @@ class Iblocks
         return $res;
     }
 
+    /**
+     * $obj = ["name"=>"air core2dd", "prop"=>["prop1"=>"aaa"]];
+     * Iblocks::addElement($obj, 1);
+     */
+    public static function addElement($obj, $iblockId)
+    {
+        $el = new iblock_element();
+        $el->name = $obj["name"];
+        $el->iblock_id = $iblockId;
+        $el->save();
+        foreach ($obj["prop"] as $key => $value) {
+            $prop = new iblock_prop_value();
+            $pp = iblock_property::where("name", "=", $key)->firstOrFail();
+            $prop->prop_id = $pp->id;
+            $prop->value = $value;
+            $prop->el_id = $el->id;
+            $prop->save();
+        }
+    }
+
+    /**
+     * $prop = ["prop1"=>"bbb"];
+     * Iblocks::updateElement($prop, 16);
+     */
+    public static function updateElement($props, $elId)
+    {
+        $pp = iblock_prop_value::where("el_id", "=", $elId)->get();
+        foreach ($pp as $p) {
+            $name = $p->prop->name;
+            $p->value = $props[$name];
+            $p->update();
+        }
+    }
+
     public static function treeToArray($tree)
     {
         $resTree = [];
