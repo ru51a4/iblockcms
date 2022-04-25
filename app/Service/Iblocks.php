@@ -35,16 +35,29 @@ class Iblocks
         return $res;
     }
 
-    public static function GetList($iblockID, $elId = false)
+    /*
+    $where["prop"];
+    $where["type"];
+    $where["value"];*/
+    public static function GetList($iblockID, $elId = false, $where)
     {
         $stack = [$iblockID];
         $res = [];
-        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId) {
+        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, $where) {
             $c[$iblock->id]["key"] = $iblock->name;
             $c[$iblock->id]["path"] = $stack;
             //
             if ($iblock->id == $elId || !$elId) {
-                $els = $iblock->elements;
+                $els = iblock_element::where("iblock_id", "=", $elId);
+                foreach ($where as $cond) {
+                    $propId = iblock_property::where("name", "=", $cond["prop"])->first()->id;
+                    $cond["propId"] = $propId;
+                    $els->whereHas('propvalue', function ($query) use ($cond) {
+                        $query->where('prop_id', '=', $cond["propId"]);
+                        $query->where("value", "=", $cond["value"]);
+                    });
+                }
+                $els = $els->get();
                 foreach ($els as $el) {
                     $t = $el->toArray();
                     $t["prop"] = [];

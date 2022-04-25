@@ -25,7 +25,8 @@ class HomeController extends Controller
      */
     public function index($id = 1)
     {
-        $els = Iblocks::GetList(1, $id);
+        $els = Iblocks::GetList(1, 1, [["prop" => "prop1", "value" => "23", "type" => "="]]);
+        dd($els);
         $res = Iblocks::treeToArray($els);
         $tree = $res;
         $countSection = array_filter($tree[$id], function ($item) {
