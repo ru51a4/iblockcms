@@ -39,7 +39,7 @@ class Iblocks
     $where["prop"];
     $where["type"];
     $where["value"];*/
-    public static function GetList($iblockID, $elId = false, $where)
+    public static function GetList($iblockID, $elId = false, $where = null)
     {
         $stack = [$iblockID];
         $res = [];
@@ -48,14 +48,16 @@ class Iblocks
             $c[$iblock->id]["path"] = $stack;
             //
             if ($iblock->id == $elId || !$elId) {
-                $els = iblock_element::where("iblock_id", "=", $elId);
-                foreach ($where as $cond) {
-                    $propId = iblock_property::where("name", "=", $cond["prop"])->first()->id;
-                    $cond["propId"] = $propId;
-                    $els->whereHas('propvalue', function ($query) use ($cond) {
-                        $query->where('prop_id', '=', $cond["propId"]);
-                        $query->where("value", "=", $cond["value"]);
-                    });
+                $els = iblock_element::where("iblock_id", "=", $iblock->id);
+                if ($where) {
+                    foreach ($where as $cond) {
+                        $propId = iblock_property::where("name", "=", $cond["prop"])->first()->id;
+                        $cond["propId"] = $propId;
+                        $els->whereHas('propvalue', function ($query) use ($cond) {
+                            $query->where('prop_id', '=', $cond["propId"]);
+                            $query->where("value", "=", $cond["value"]);
+                        });
+                    }
                 }
                 $els = $els->get();
                 foreach ($els as $el) {
@@ -134,16 +136,16 @@ class Iblocks
     public static function treeToArray($tree)
     {
         $resTree = [];
-        $getTree = function ($tree, $c) use (&$getTree, &$treeKeys, &$resTree) {
+        $getTree = function ($tree) use (&$getTree, &$treeKeys, &$resTree) {
             foreach ($tree as $key => $el) {
                 //key - iblock_id
                 if (isset($el["key"])) { //if curr iblock
-                    $resTree[$key] = $c[$key];
-                    $getTree($el, $c[$key]);
+                    $resTree[$key] = $el;
+                    $getTree($el);
                 }
             }
         };
-        $getTree($tree, $tree);
+        $getTree($tree);
         return $resTree;
     }
 }
