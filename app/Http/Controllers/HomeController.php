@@ -25,6 +25,9 @@ class HomeController extends Controller
      */
     public function index($id = 1)
     {
+        Iblocks::updateElement(["color" => ["r", "w"]], 1);
+        Iblocks::addElement(["name" => "ssc", "prop" => ["color" => ["r", "w"]]], 1);
+
         $els = Iblocks::GetList(1);
         $res = Iblocks::treeToArray($els);
         $tree = $res;

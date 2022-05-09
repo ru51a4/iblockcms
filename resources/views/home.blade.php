@@ -52,7 +52,15 @@
                             <li><a href="/detail/{{$el["id"]}}">{{$el["name"]}}</a>
                                 <ul>
                                     @foreach($el["prop"] as $key => $prop)
-                                        <li>{{$key}} - {{$prop}}</li>
+                                        @if(is_array($prop))
+                                            <ul>
+                                                @foreach($prop as $item)
+                                                    <li> {{$key}} - {{$item}}</li>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                            <li>{{$key}} - {{$prop}}</li>
+                                        @endif
                                     @endforeach
                                 </ul>
                             </li>

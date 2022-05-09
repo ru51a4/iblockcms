@@ -73,6 +73,8 @@ class Iblocks
                     foreach ($el->propvalue as $prop) {
                         if ($prop->prop->is_number) {
                             $t["prop"][$prop->prop->name] = $prop->value_number;
+                        } else if ($prop->prop->is_multy) {
+                            $t["prop"][$prop->prop->name][] = $prop->value;
                         } else {
                             $t["prop"][$prop->prop->name] = $prop->value;
                         }
@@ -104,6 +106,8 @@ class Iblocks
             foreach ($el->propvalue as $prop) {
                 if ($prop->prop->is_number) {
                     $t["prop"][$prop->prop->name] = $prop->value_number;
+                } else if ($prop->prop->is_multy) {
+                    $t["prop"][$prop->prop->name][] = $prop->value;
                 } else {
                     $t["prop"][$prop->prop->name] = $prop->value;
                 }
@@ -127,13 +131,22 @@ class Iblocks
             $prop = new iblock_prop_value();
             $pp = iblock_property::where("name", "=", $key)->firstOrFail();
             $prop->prop_id = $pp->id;
+            $prop->el_id = $el->id;
             if ($prop->prop->is_number) {
                 $prop->value_number = $value;
+                $prop->save();
+            } else if ($prop->prop->is_multy) {
+                foreach ($value as $item) {
+                    $c = new iblock_prop_value();
+                    $c->prop_id = $pp->id;
+                    $c->el_id = $el->id;
+                    $c->value = $item;
+                    $c->save();
+                }
             } else {
                 $prop->value = $value;
+                $prop->save();
             }
-            $prop->el_id = $el->id;
-            $prop->save();
         }
     }
 
@@ -144,14 +157,29 @@ class Iblocks
     public static function updateElement($props, $elId)
     {
         $pp = iblock_prop_value::where("el_id", "=", $elId)->get();
-        foreach ($pp as $p) {
-            if (isset($props[$p->prop->name])) {
-                if ($p->prop->is_number) {
-                    $p->value_number = $props[$p->prop->name];
-                } else {
-                    $p->value = $props[$p->prop->name];
+        $res = [];
+        foreach ($pp as $item) {
+            if ($item->prop->is_multy) {
+                $res[$item->prop->name][] = $item;
+            } else {
+                $res[$item->prop->name] = $item;
+            }
+        }
+        foreach ($res as $p) {
+            if (is_array($p)) {
+                foreach ($p as $key => $t) {
+                    $t->value = $props[$t->prop->name][$key];
+                    $t->update();
                 }
-                $p->update();
+            } else {
+                if (isset($props[$p->prop->name])) {
+                    if ($p->prop->is_number) {
+                        $p->value_number = $props[$p->prop->name];
+                    } else {
+                        $p->value = $props[$p->prop->name];
+                    }
+                    $p->update();
+                }
             }
         }
     }
