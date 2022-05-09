@@ -4,9 +4,6 @@ iblock:
 iblock_elements:  
 &nbsp;&nbsp;&nbsp;id name iblock_id  
 iblock_properties:  
-&nbsp;&nbsp;&nbsp;id name iblock_id  
+&nbsp;&nbsp;&nbsp;id is_number name iblock_id  
 iblock_prop_value:  
-&nbsp;&nbsp;&nbsp;id value prop_id el_id  
-
-<img src="http://i.imgur.com/mpwi4lf.jpg">  
-https://yoomoney.ru/to/4100116547965706
+&nbsp;&nbsp;&nbsp;id value value_number prop_id el_id
