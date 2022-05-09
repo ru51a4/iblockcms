@@ -11,7 +11,11 @@
             @foreach($resProp as $prop)
                 <div class="form-group">
                     <label>{{$prop["name"]}}</label>
-                    <input name="{{$prop["id"]}}" value="{{$prop["value"]}}" type="text">
+                @if(!$prop["is_number"])
+                        <textarea name="{{$prop["id"]}}">{{$prop["value"]}}</textarea>
+                    @else
+                        <input value="{{$prop["value"]}}" name="{{$prop["id"]}}" type="text">
+                    @endif
                  </div>
             @endforeach
             <button class="btn btn-primary">edit</button>
