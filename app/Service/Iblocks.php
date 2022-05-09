@@ -105,7 +105,11 @@ class Iblocks
             $t = $el->toArray();
             $t["prop"] = [];
             foreach ($el->propvalue as $prop) {
-                $t["prop"][$prop->prop->name] = $prop->value;
+                if ($prop->prop->is_number) {
+                    $t["prop"][$prop->prop->name] = $prop->value_number;
+                } else {
+                    $t["prop"][$prop->prop->name] = $prop->value;
+                }
             }
             $res[] = $t;
         }
@@ -126,7 +130,11 @@ class Iblocks
             $prop = new iblock_prop_value();
             $pp = iblock_property::where("name", "=", $key)->firstOrFail();
             $prop->prop_id = $pp->id;
-            $prop->value = $value;
+            if ($prop->prop->is_number) {
+                $prop->value_number = $value;
+            } else {
+                $prop->value = $value;
+            }
             $prop->el_id = $el->id;
             $prop->save();
         }
@@ -141,7 +149,11 @@ class Iblocks
         $pp = iblock_prop_value::where("el_id", "=", $elId)->get();
         foreach ($pp as $p) {
             if (isset($props[$p->prop->name])) {
-                $p->value = $props[$p->prop->name];
+                if ($p->prop->is_number) {
+                    $p->value_number = $props[$p->prop->name];
+                } else {
+                    $p->value = $props[$p->prop->name];
+                }
                 $p->update();
             }
         }
