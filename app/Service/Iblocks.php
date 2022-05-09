@@ -39,11 +39,11 @@ class Iblocks
     $where["prop"];
     $where["type"];
     $where["value"];*/
-    public static function GetList($iblockID, $elId = false, $where = null)
+    public static function GetList($iblockID, $elId = false, $itemPerPage = 5, $page = false, $where = null)
     {
         $stack = [$iblockID];
         $res = [];
-        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, $where) {
+        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, $where, $itemPerPage, $page) {
             $c[$iblock->id]["key"] = $iblock->name;
             $c[$iblock->id]["path"] = $stack;
             //
@@ -65,6 +65,9 @@ class Iblocks
                             });
                         }
                     }
+                }
+                if ($page) {
+                    $els = $els->offset($itemPerPage * ($page - 1))->take($itemPerPage);
                 }
                 $els = $els->get();
                 foreach ($els as $el) {
