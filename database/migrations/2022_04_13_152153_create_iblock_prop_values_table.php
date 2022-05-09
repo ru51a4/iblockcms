@@ -16,7 +16,8 @@ class CreateIblockPropValuesTable extends Migration
         Schema::create('iblock_prop_values', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('value');
+            $table->string('value')->nullable();
+            $table->integer('value_number')->nullable();
             $table->unsignedBigInteger('prop_id');
             $table->foreign('prop_id')
                 ->references('id')->on('iblock_properties')

@@ -51,12 +51,19 @@ class Iblocks
                 $els = iblock_element::where("iblock_id", "=", $iblock->id);
                 if ($where) {
                     foreach ($where as $cond) {
-                        $propId = iblock_property::where("name", "=", $cond["prop"])->first()->id;
-                        $cond["propId"] = $propId;
-                        $els->whereHas('propvalue', function ($query) use ($cond) {
-                            $query->where('prop_id', '=', $cond["propId"]);
-                            $query->where("value", "=", $cond["value"]);
-                        });
+                        $cProp = iblock_property::where("name", "=", $cond["prop"])->first();
+                        $cond["propId"] = $cProp->id;
+                        if ($cProp->is_number) {
+                            $els->whereHas('propvalue', function ($query) use ($cond) {
+                                $query->where('prop_id', '=', $cond["propId"]);
+                                $query->where("value_number", $cond["type"], $cond["value"]);
+                            });
+                        } else {
+                            $els->whereHas('propvalue', function ($query) use ($cond) {
+                                $query->where('prop_id', '=', $cond["propId"]);
+                                $query->where("value", $cond["type"], $cond["value"]);
+                            });
+                        }
                     }
                 }
                 $els = $els->get();
@@ -64,7 +71,11 @@ class Iblocks
                     $t = $el->toArray();
                     $t["prop"] = [];
                     foreach ($el->propvalue as $prop) {
-                        $t["prop"][$prop->prop->name] = $prop->value;
+                        if ($prop->prop->is_number) {
+                            $t["prop"][$prop->prop->name] = $prop->value_number;
+                        } else {
+                            $t["prop"][$prop->prop->name] = $prop->value;
+                        }
                     }
                     $c[$iblock->id]["elements"][] = $t;
                 }

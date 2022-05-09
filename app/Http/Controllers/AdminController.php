@@ -73,6 +73,7 @@ class AdminController extends Controller
     public function propertyadd(Request $request, iblock $iblock)
     {
         $property = new iblock_property();
+        $property->is_number = ($request->is_number == "on") ? 1 : 0;
         $property->name = $request->name;
         $iblock->properties()->save($property);
         return redirect("/admin/" . $iblock->id . '/iblockedit');
@@ -95,7 +96,11 @@ class AdminController extends Controller
             $p = new iblock_prop_value();
             $p->prop_id = $prop->id;
             $p->el_id = $el->id;
-            $p->value = $request[$prop->id];
+            if ($prop->is_number) {
+                $p->value_number = (integer)$request[$prop->id];
+            } else {
+                $p->value = $request[$prop->id];
+            }
             $p->save();
         }
         return redirect("/admin/");
@@ -117,8 +122,13 @@ class AdminController extends Controller
 
         foreach ($props as $prop) {
             $t = $prop->toArray();
-            $prop = iblock_prop_value::where("el_id", "=", $iblock_element->id)->where("prop_id", "=", $prop->id)->first();
-            $t["value"] = (isset($prop->value)) ? $prop->value : "";
+            $cProp = iblock_prop_value::where("el_id", "=", $iblock_element->id)->where("prop_id", "=", $prop->id)->first();
+            if ($prop->is_number) {
+                $t["value"] = (isset($cProp->value_number)) ? $cProp->value_number : "";
+            } else {
+                $t["value"] = (isset($cProp->value)) ? $cProp->value : "";
+
+            }
 
             $resProp[] = $t;
         }
@@ -133,13 +143,22 @@ class AdminController extends Controller
         foreach ($props as $prop) {
             $p = iblock_prop_value::where("el_id", "=", $iblock_element->id)->where("prop_id", "=", $prop->id)->first();
             if (isset($p)) {
-                $p->value = $request[$prop->id];
+                if ($prop->is_number) {
+                    $p->value_number = (integer)$request[$prop->id];
+                } else {
+                    $p->value = $request[$prop->id];
+                }
                 $p->update();
             } else {
                 $t = new iblock_prop_value();
                 $t->prop_id = $prop->id;
                 $t->el_id = $iblock_element->id;
-                $t->value = $request[$prop->id];
+                if ($prop->is_number) {
+                    $t->value_number = (integer)$request[$prop->id];
+                } else {
+                    $t->value = $request[$prop->id];
+                }
+
                 $t->save();
             }
         }

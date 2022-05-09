@@ -37,6 +37,9 @@
                             <label for="exampleFormControlInput1" class="form-label">{{$prop->name}}</label>
                         </div>
                         <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">is_number - {{$prop->is_number}}</label>
+                        </div>
+                        <div class="mb-3">
                             <button type="submit" class="btn btn-danger">удалить</button>
                         </div>
                     </form>
@@ -46,6 +49,10 @@
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">название проперти</label>
                         <input type="text" class="form-control" name="name">
+                    </div>
+                    <div class="mb-3">
+                        <label>is_number</label>
+                        <input type="checkbox" id="is_number" name="is_number">
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary">добавить property</button>

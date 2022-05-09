@@ -39,7 +39,11 @@
                             <ul>
                                 @foreach($el->propvalue as $prop)
                                     <li>
-                                        {{$prop->prop->name}} - {{$prop->value}}
+                                        @if($prop->prop->is_number)
+                                            {{$prop->prop->name}} - {{$prop->value_number}}
+                                        @else
+                                            {{$prop->prop->name}} - {{$prop->value}}
+                                        @endif
                                     </li>
                                 @endforeach
                             </ul>
