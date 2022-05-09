@@ -10,8 +10,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/jumbotron/">
 
-
-    <!-- Bootstrap core CSS -->
     <script
         src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="

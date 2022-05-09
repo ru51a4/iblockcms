@@ -47,7 +47,7 @@ class AdminController extends Controller
     {
         $breadcrumb = Iblocks::getBreadcrumbIblock($iblock);
         $iblocks = iblock::where("parrent_id", "=", $iblock->id)->get();
-        $elements = iblock_element::where("iblock_id", "=", $iblock->id)->get();
+        $elements = iblock_element::where("iblock_id", "=", $iblock->id)->paginate(20);
         return view('admin/elementlist', compact("iblock", "elements", "iblocks", "breadcrumb"));
     }
 

@@ -60,7 +60,9 @@
                     </div>
                 </div>
             @endforeach
-
+            <div class="col-12 mt-5">
+                {{ $elements->links('pagination.default') }}
+            </div>
         </div>
     </div>
 @endsection
