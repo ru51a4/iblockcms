@@ -53,17 +53,14 @@ class Iblocks
                     foreach ($where as $cond) {
                         $cProp = iblock_property::where("name", "=", $cond["prop"])->first();
                         $cond["propId"] = $cProp->id;
-                        if ($cProp->is_number) {
-                            $els->whereHas('propvalue', function ($query) use ($cond) {
-                                $query->where('prop_id', '=', $cond["propId"]);
+                        $els->whereHas('propvalue', function ($query) use ($cond, $cProp) {
+                            $query->where('prop_id', '=', $cond["propId"]);
+                            if ($cProp->is_number) {
                                 $query->where("value_number", $cond["type"], $cond["value"]);
-                            });
-                        } else {
-                            $els->whereHas('propvalue', function ($query) use ($cond) {
-                                $query->where('prop_id', '=', $cond["propId"]);
+                            } else {
                                 $query->where("value", $cond["type"], $cond["value"]);
-                            });
-                        }
+                            }
+                        });
                     }
                 }
                 if ($page) {

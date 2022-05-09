@@ -103,7 +103,7 @@ class AdminController extends Controller
             }
             $p->save();
         }
-        return redirect("/admin/");
+        return redirect("/admin/" . $iblock->id . "/elementlist");
     }
 
     public function deleteelement($iblock_el)
@@ -162,7 +162,7 @@ class AdminController extends Controller
                 $t->save();
             }
         }
-        return redirect("/admin/");
+        return redirect("/admin/" . $iblock_element->iblock_id . "/elementlist");
     }
 
 
