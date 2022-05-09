@@ -38,6 +38,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="exampleFormControlInput1" class="form-label">is_number - {{$prop->is_number}}</label>
+                        </div> <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">is_multy - {{$prop->is_multy}}</label>
                         </div>
                         <div class="mb-3">
                             <button type="submit" class="btn btn-danger">удалить</button>
@@ -53,6 +55,10 @@
                     <div class="mb-3">
                         <label>is_number</label>
                         <input type="checkbox" id="is_number" name="is_number">
+                    </div>
+                    <div class="mb-3">
+                        <label>is_multy</label>
+                        <input type="checkbox" id="is_multy" name="is_multy">
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary">добавить property</button>
