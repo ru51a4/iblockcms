@@ -99,6 +99,7 @@ class AdminController extends Controller
             $p->el_id = $el->id;
             if ($prop->is_number) {
                 $p->value_number = (integer)$request[$prop->id];
+                $p->save();
             } else if ($prop->is_multy) {
                 foreach ($request[$prop->id] as $item) {
                     $c = new iblock_prop_value();
@@ -107,11 +108,10 @@ class AdminController extends Controller
                     $c->value = $item;
                     $c->save();
                 }
-                break;
             } else {
                 $p->value = $request[$prop->id];
+                $p->save();
             }
-            $p->save();
         }
         return redirect("/admin/" . $iblock->id . "/elementlist");
     }
