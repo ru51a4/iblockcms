@@ -164,6 +164,7 @@ class AdminController extends Controller
                 foreach ($p as $c) {
                     $c->value = $request[$prop->id][$counter++];
                     $c->update();
+                    //todo add/delete
                 }
             } else {
                 $p = iblock_prop_value::where("el_id", "=", $iblock_element->id)->where("prop_id", "=", $prop->id)->first();

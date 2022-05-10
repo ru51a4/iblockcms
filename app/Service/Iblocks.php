@@ -167,6 +167,7 @@ class Iblocks
         }
         foreach ($res as $p) {
             if (is_array($p)) {
+                //todo
                 foreach ($p as $key => $t) {
                     $t->value = $props[$t->prop->name][$key];
                     $t->update();
