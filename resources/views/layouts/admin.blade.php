@@ -122,7 +122,7 @@
                         <span>Информационные блоки</span> </a>
                 </li>
 
-            <!-- this will collapse to a button when sidebar is collapsed -->
+                <!-- this will collapse to a button when sidebar is collapsed -->
 
         </div>
         <!-- /sidebar-content -->
@@ -175,14 +175,6 @@
                 <nav class="nav">
                     <div class="nav-item">
                         <div class="dropdown dropleft me-1">
-                            <button class="btn" id="notificationMenuLink" data-bs-toggle="dropdown"
-                                    data-bs-display="static" aria-expanded="false">
-                                <l-i name="notifications" size="24"></l-i>
-                                <span class="btn-indicator bg-danger">
-                      99+
-                      <span class="visually-hidden">unread messages</span>
-                    </span>
-                            </button>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg py-0"
                                 aria-labelledby="notificationMenuLink">
                                 <div class="dropdown-menu-header">
