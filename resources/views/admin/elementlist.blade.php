@@ -8,13 +8,15 @@
             </a>
         </div>
         <div class="my-4">
-            @foreach($breadcrumb as $item)
+            <a href="/admin/">Home</a> /
+        @foreach($breadcrumb as $item)
                 <a href="/admin/{{$item["id"]}}/elementlist">{{$item["name"]}}</a>
                 @if(end($breadcrumb) != $item)
-                    -
+                    /
                 @endif
             @endforeach
         </div>
+        <hr>
     </div>
     <div class="row">
         <div class="d-flex flex-column justify-content-start dashboard">
