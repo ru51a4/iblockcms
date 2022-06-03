@@ -79,40 +79,28 @@
         </a>
 
         <!-- optional selector -->
-        <select name="" id="sidebar-selector" class="form-select">
-            <option value="">Main site</option>
-            <option value="" style="background: crimson; color: #fff">This site</option>
-            <option value="">That site</option>
-            <option value="">Other site with a long name&nbsp;&nbsp;</option>
-            <!-- cheap trick to add space after -->
-        </select>
-
-        <!-- optional dropdown or profile -->
-        <div class="sidebar-profile dropdown">
-            <button
-                class="btn btn-default"
-                id="profile-trigger"
-                data-bs-toggle="dropdown"
-                data-bs-display="static"
-                data-bs-offset="-32"
-                aria-expanded="false"
-            >
-                <img
-                    src="https://randomuser.me/api/portraits/thumb/men/75.jpg"
-                    class="avatar avatar-thumb rounded cursor-pointer"
-                    alt="John Nemo"
-                />
-                <div class="sidebar-profile-name dropdown-toggle">John Nemo</div>
+    {{--<select name="" id="sidebar-selector" class="form-select">
+        <option value="">Main site</option>
+        <option value="" style="background: crimson; color: #fff">This site</option>
+        <option value="">That site</option>
+        <option value="">Other site with a long name&nbsp;&nbsp;</option>
+        <!-- cheap trick to add space after -->
+    </select>
+--}}
+    <!-- optional dropdown or profile -->
+        @if(auth()->user())
+            <div class="sidebar-profile dropdown">
+                <div class="sidebar-profile-name dropdown-toggle">{{auth()->user()->email}} </div>
                 <div class="sidebar-profile-subtitle">Administrator</div>
-            </button>
+                </button>
 
-            <div class="dropdown-menu">
-                <a class="dropdown-item" href="profile.html">Profile</a>
-                <a class="dropdown-item" href="#">Log out</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/admin/logout">Log out</a>
+                </div>
             </div>
-        </div>
+    @endif
 
-        <!-- sidebar-content -->
+    <!-- sidebar-content -->
         <div class="sidebar-content scroller">
             <ul class="sidebar-nav">
                 <li class="sidebar-nav-header">UI</li>

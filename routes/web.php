@@ -40,3 +40,4 @@ Route::post('/admin/{iblock}/addelement', [App\Http\Controllers\AdminController:
 Route::get('/admin/{iblock}/delete', [App\Http\Controllers\AdminController::class, 'deleteiblock']);
 
 Route::get("/admin/{iblock_element}/deleteelement", [App\Http\Controllers\AdminController::class, 'deleteelement']);
+Route::get('/admin/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout']);
