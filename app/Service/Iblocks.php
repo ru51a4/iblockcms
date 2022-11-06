@@ -137,6 +137,16 @@ class Iblocks
         }
     }
 
+    public static function addSection($obj, $parentId)
+    {
+        $el = new iblock();
+        $el->name = $obj["name"];
+        if ($parentId) {
+            $el->parrent_id = $parentId;
+        }
+        $el->save();
+    }
+
     /**
      * $prop = ["prop1"=>"bbb"];
      * Iblocks::updateElement($prop, 16);
