@@ -56,11 +56,11 @@
                                         @foreach($el["prop"] as $key => $prop)
                                             @if(is_array($prop))
                                                 <li>{{$key}}</li>
-                                                <ul>
+                                                <select>
                                                 @foreach($prop as $key => $prop)
-                                                    <li>{{$key}} - {{$prop}}</li>
+                                                    <option>{{$prop}}</option>
                                                 @endforeach
-                                                </ul>
+                                                </select>
                                             @else
                                                 <li>{{$key}} - {{$prop}}</li>
                                             @endif
