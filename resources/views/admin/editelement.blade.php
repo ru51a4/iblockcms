@@ -16,14 +16,18 @@
                             @foreach($prop["value"] as $id => $p)
                                 <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
                             @endforeach
-                            <span onclick="add({{$prop["id"]}}, event)">add</span>
+                            @if($prop["is_multy"])
+                                <span onclick="add({{$prop["id"]}}, event)">add</span>
+                            @endif
                         </div>
                     @else
                         <div class="d-flex flex-column multy-{{$prop["id"]}}">
                             @foreach($prop["value"] as $id => $p)
                                 <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
                             @endforeach
-                            <span onclick="add({{$prop["id"]}}, event)">add</span>
+                            @if($prop["is_multy"])
+                                <span onclick="add({{$prop["id"]}}, event)">add</span>
+                            @endif
                         </div>
                     @endif
                 </div>
