@@ -179,18 +179,9 @@
                           fill="currentColor"></path>
                 </svg>
                 <span class="fs-4">IBLOCK CMS</span>
-        </div>
-        @if(auth()->user())
-            <div class="auth d-flex flex-row align-items-center">
-                <a href="/user">
-                    <div class="nickname-author">{{auth()->user() ? auth()->user()->name: ""}}</div>
-                </a>
-                <a href="/logout">
-                    <button type="submit" class="btn btn-primary">Выйти</button>
-                </a>
-            </div>
-            @endif
-            </a>
+            </a></div>
+
+
     </header>
     @yield('content')
     <footer class="pt-3 text-muted border-top">
