@@ -18,6 +18,7 @@ class CreateIblockPropertiesTable extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('iblock_id');
             $table->integer('is_number');
+            $table->integer('is_multy');
             $table->foreign('iblock_id')
                 ->references('id')->on('iblocks')
                 ->onDelete('cascade');

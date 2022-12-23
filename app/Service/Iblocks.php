@@ -72,9 +72,27 @@ class Iblocks
                     $t["prop"] = [];
                     foreach ($el->propvalue as $prop) {
                         if ($prop->prop->is_number) {
-                            $t["prop"][$prop->prop->name] = $prop->value_number;
+                            if (isset($t["prop"][$prop->prop->name])) {
+                                if (is_array($t["prop"][$prop->prop->name])) {
+                                    $t["prop"][$prop->prop->name][] = $prop->value_number;
+                                } else {
+                                    $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
+                                    $t["prop"][$prop->prop->name][] = $prop->value_number;
+                                }
+                            } else {
+                                $t["prop"][$prop->prop->name] = $prop->value_number;
+                            }
                         } else {
-                            $t["prop"][$prop->prop->name] = $prop->value;
+                            if (isset($t["prop"][$prop->prop->name])) {
+                                if (is_array($t["prop"][$prop->prop->name])) {
+                                    $t["prop"][$prop->prop->name][] = $prop->value;
+                                } else {
+                                    $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
+                                    $t["prop"][$prop->prop->name][] = $prop->value;
+                                }
+                            } else {
+                                $t["prop"][$prop->prop->name] = $prop->value;
+                            }
                         }
                     }
                     $c[$iblock->id]["elements"][] = $t;
@@ -103,9 +121,27 @@ class Iblocks
             $t["prop"] = [];
             foreach ($el->propvalue as $prop) {
                 if ($prop->prop->is_number) {
-                    $t["prop"][$prop->prop->name] = $prop->value_number;
+                    if (isset($t["prop"][$prop->prop->name])) {
+                        if (is_array($t["prop"][$prop->prop->name])) {
+                            $t["prop"][$prop->prop->name][] = $prop->value_number;
+                        } else {
+                            $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
+                            $t["prop"][$prop->prop->name][] = $prop->value_number;
+                        }
+                    } else {
+                        $t["prop"][$prop->prop->name] = $prop->value_number;
+                    }
                 } else {
-                    $t["prop"][$prop->prop->name] = $prop->value;
+                    if (isset($t["prop"][$prop->prop->name])) {
+                        if (is_array($t["prop"][$prop->prop->name])) {
+                            $t["prop"][$prop->prop->name][] = $prop->value;
+                        } else {
+                            $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
+                            $t["prop"][$prop->prop->name][] = $prop->value;
+                        }
+                    } else {
+                        $t["prop"][$prop->prop->name] = $prop->value;
+                    }
                 }
             }
             $res[] = $t;
@@ -123,17 +159,36 @@ class Iblocks
         $el->name = $obj["name"];
         $el->iblock_id = $iblockId;
         $el->save();
-        foreach ($obj["prop"] as $key => $value) {
-            $prop = new iblock_prop_value();
-            $pp = iblock_property::where("name", "=", $key)->firstOrFail();
-            $prop->prop_id = $pp->id;
-            if ($prop->prop->is_number) {
-                $prop->value_number = $value;
+        foreach ($obj["prop"] as $key => $prop) {
+            $count = 0;
+            $p = new iblock_prop_value();
+            $p->prop_id = $prop->id;
+            $p->el_id = $el->id;
+            $p->value_id = ++$count;
+            //multy shit
+            if (is_array($obj->{$prop->id})) {
+                $count = 0;
+                foreach ($obj->{$prop->id} as $item) {
+                    $p = new iblock_prop_value();
+                    $p->prop_id = $prop->id;
+                    $p->el_id = $el->id;
+                    $p->value_id = ++$count;
+                    if ($prop->is_number) {
+                        $p->value_number = (integer)$item;
+                    } else {
+                        $p->value = $item;
+                    }
+                    $p->save();
+                }
             } else {
-                $prop->value = $value;
+                //
+                if ($prop->is_number) {
+                    $p->value_number = (integer)$obj[$prop->id];
+                } else {
+                    $p->value = $obj[$prop->id];
+                }
+                $p->save();
             }
-            $prop->el_id = $el->id;
-            $prop->save();
         }
     }
 
@@ -153,18 +208,30 @@ class Iblocks
      */
     public static function updateElement($props, $elId)
     {
-        $pp = iblock_prop_value::where("el_id", "=", $elId)->get();
+        $pp = iblock_property::where("el_id", "=", $elId)->get();
         foreach ($pp as $p) {
-            if (isset($props[$p->prop->name])) {
-                if ($p->prop->is_number) {
-                    $p->value_number = $props[$p->prop->name];
-                } else {
-                    $p->value = $props[$p->prop->name];
+            if (isset($props[$p->name])) {
+                iblock_prop_value::where("el_id", "=", $elId)->where("prop_id", "=", $p->id)->delete();
+                $count = 0;
+                foreach ($props[$p->name] as $item) {
+                    if (empty($item)) {
+                        continue;
+                    }
+                    $c = new iblock_prop_value();
+                    $c->el_id = $elId;
+                    $c->prop_id = $p->id;
+                    $c->value_id = ++$count;
+                    if ($p->is_number) {
+                        $c->value_number = (integer)$item;
+                    } else {
+                        $c->value = $item;
+                    }
+                    $c->save();
                 }
-                $p->update();
             }
         }
     }
+
 
     public static function treeToArray($tree)
     {
