@@ -74,6 +74,7 @@ class AdminController extends Controller
     {
         $property = new iblock_property();
         $property->is_number = ($request->is_number == "on") ? 1 : 0;
+        $property->is_multy = ($request->is_multy == "on") ? 1 : 0;
         $property->name = $request->name;
         $iblock->properties()->save($property);
         return redirect("/admin/" . $iblock->id . '/iblockedit');
@@ -93,15 +94,35 @@ class AdminController extends Controller
         $el->save();
         $props = $iblock->getPropWithParrents();
         foreach ($props as $prop) {
+            $count = 0;
             $p = new iblock_prop_value();
             $p->prop_id = $prop->id;
             $p->el_id = $el->id;
-            if ($prop->is_number) {
-                $p->value_number = (integer)$request[$prop->id];
+            $p->value_id = ++$count;
+            //multy shit
+            if (is_array($request->{$prop->id})) {
+                $count = 0;
+                foreach ($request->{$prop->id} as $item) {
+                    $p = new iblock_prop_value();
+                    $p->prop_id = $prop->id;
+                    $p->el_id = $el->id;
+                    $p->value_id = ++$count;
+                    if ($prop->is_number) {
+                        $p->value_number = (integer)$item;
+                    } else {
+                        $p->value = $item;
+                    }
+                    $p->save();
+                }
             } else {
-                $p->value = $request[$prop->id];
+                //
+                if ($prop->is_number) {
+                    $p->value_number = (integer)$request[$prop->id];
+                } else {
+                    $p->value = $request[$prop->id];
+                }
+                $p->save();
             }
-            $p->save();
         }
         return redirect("/admin/" . $iblock->id . "/elementlist");
     }
@@ -122,16 +143,18 @@ class AdminController extends Controller
 
         foreach ($props as $prop) {
             $t = $prop->toArray();
-            $cProp = iblock_prop_value::where("el_id", "=", $iblock_element->id)->where("prop_id", "=", $prop->id)->first();
-            if ($prop->is_number) {
-                $t["value"] = (isset($cProp->value_number)) ? $cProp->value_number : "";
-            } else {
-                $t["value"] = (isset($cProp->value)) ? $cProp->value : "";
+            $cProp = iblock_prop_value::where("el_id", "=", $iblock_element->id)->where("prop_id", "=", $prop->id)->get()->toArray();
+            foreach ($cProp as $k) {
+                if ($prop->is_number) {
+                    $t["value"][$k["value_id"]] = (isset($k["value_number"])) ? $k["value_number"] : "";
 
+                } else {
+                    $t["value"][$k["value_id"]] = (isset($k["value"])) ? $k["value"] : "";
+                }
             }
-
-            $resProp[] = $t;
         }
+        $resProp[] = $t;
+
         return view('admin/editelement', compact("iblock_element", "resProp"));
     }
 
@@ -141,25 +164,25 @@ class AdminController extends Controller
         $props = $iblock_element->iblock->getPropWithParrents();
         $iblock_element->update();
         foreach ($props as $prop) {
-            $p = iblock_prop_value::where("el_id", "=", $iblock_element->id)->where("prop_id", "=", $prop->id)->first();
-            if (isset($p)) {
-                if ($prop->is_number) {
-                    $p->value_number = (integer)$request[$prop->id];
-                } else {
-                    $p->value = $request[$prop->id];
+            if (!count($request->{$prop->id})) {
+                return;
+            }
+            iblock_prop_value::where("el_id", "=", $iblock_element->id)->where("prop_id", "=", $prop->id)->delete();
+            $count = 0;
+            foreach ($request->{$prop->id} as $item) {
+                if(empty($item)){
+                    continue;
                 }
-                $p->update();
-            } else {
-                $t = new iblock_prop_value();
-                $t->prop_id = $prop->id;
-                $t->el_id = $iblock_element->id;
+                $p = new iblock_prop_value();
+                $p->el_id = $iblock_element->id;
+                $p->prop_id = $prop->id;
+                $p->value_id = ++$count;
                 if ($prop->is_number) {
-                    $t->value_number = (integer)$request[$prop->id];
+                    $p->value_number = (integer)$item;
                 } else {
-                    $t->value = $request[$prop->id];
+                    $p->value = $item;
                 }
-
-                $t->save();
+                $p->save();
             }
         }
         return redirect("/admin/" . $iblock_element->iblock_id . "/elementlist");

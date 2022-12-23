@@ -12,13 +12,34 @@
                 <div class="form-group">
                     <label>{{$prop->name}}</label>
                     @if(!$prop->is_number)
-                        <textarea name="{{$prop->id}}"></textarea>
+                        @if(!$prop->is_multy)
+                            <textarea name="{{$prop->id}}"></textarea>
+                        @else
+                            <div class="d-flex flex-column multy-{{$prop->name}}">
+                                <span onclick="add({{$prop->id}}, event)">add</span>
+                            </div>
+                        @endif
                     @else
-                        <input name="{{$prop->id}}" type="text">
+                        @if(!$prop->is_multy)
+                            <input name="{{$prop->id}}" type="text">
+                        @else
+                            <div class="d-flex flex-column multy-{{$prop->name}}">
+                                <span onclick="add({{$prop->id}}, event)">add</span>
+                            </div>
+                        @endif
                     @endif
                 </div>
             @endforeach
             <button class="btn btn-primary">add</button>
         </form>
     </div>
+    <script>
+        function add(id, e){
+            e.preventDefault();
+            var parinput=document.createElement('input');
+            $(parinput).attr("type","text");
+            $(parinput).attr("name",`${id}[]`);
+            $(e.target.parentElement).append(parinput)
+        }
+    </script>
 @endsection

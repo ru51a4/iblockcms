@@ -47,17 +47,29 @@
 
             <div class="row">
                 <ul>
-                    @foreach($tree[$id]["elements"] as $key => $el)
-                        @if(isset($el["name"]))
-                            <li><a href="/detail/{{$el["id"]}}">{{$el["name"]}}</a>
-                                <ul>
-                                    @foreach($el["prop"] as $key => $prop)
-                                        <li>{{$key}} - {{$prop}}</li>
-                                    @endforeach
-                                </ul>
-                            </li>
-                        @endif
-                    @endforeach
+                    @if (!empty($tree[$id]["elements"]))
+
+                        @foreach($tree[$id]["elements"] as $key => $el)
+                            @if(isset($el["name"]))
+                                <li><a href="/detail/{{$el["id"]}}">{{$el["name"]}}</a>
+                                    <ul>
+                                        @foreach($el["prop"] as $key => $prop)
+                                            @if(is_array($prop))
+                                                <li>{{$key}}</li>
+                                                <ul>
+                                                @foreach($prop as $key => $prop)
+                                                    <li>{{$key}} - {{$prop}}</li>
+                                                @endforeach
+                                                </ul>
+                                            @else
+                                                <li>{{$key}} - {{$prop}}</li>
+                                            @endif
+                                        @endforeach
+                                    </ul>
+                                </li>
+                            @endif
+                        @endforeach
+                    @endif
                 </ul>
             </div>
         </div>

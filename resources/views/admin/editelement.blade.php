@@ -11,14 +11,33 @@
             @foreach($resProp as $prop)
                 <div class="form-group">
                     <label>{{$prop["name"]}}</label>
-                @if(!$prop["is_number"])
-                        <textarea name="{{$prop["id"]}}">{{$prop["value"]}}</textarea>
+                    @if(!$prop["is_number"])
+                        <div class="d-flex flex-column multy-{{$prop["id"]}}">
+                            @foreach($prop["value"] as $id => $p)
+                                <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
+                            @endforeach
+                            <span onclick="add({{$prop["id"]}}, event)">add</span>
+                        </div>
                     @else
-                        <input value="{{$prop["value"]}}" name="{{$prop["id"]}}" type="text">
+                        <div class="d-flex flex-column multy-{{$prop["id"]}}">
+                            @foreach($prop["value"] as $id => $p)
+                                <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
+                            @endforeach
+                            <span onclick="add({{$prop["id"]}}, event)">add</span>
+                        </div>
                     @endif
-                 </div>
+                </div>
             @endforeach
             <button class="btn btn-primary">edit</button>
         </form>
     </div>
+    <script>
+        function add(id, e) {
+            e.preventDefault();
+            var parinput = document.createElement('input');
+            $(parinput).attr("type", "text");
+            $(parinput).attr("name", `${id}[]`);
+            $(e.target.parentElement).append(parinput)
+        }
+    </script>
 @endsection
