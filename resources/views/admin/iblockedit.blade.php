@@ -32,7 +32,7 @@
                     </div>
                 </form>
                 @foreach($iblock->properties as $prop)
-                    <form>
+                    <form action="/admin/{{$iblock->id}}/deletepropery">
                         <div class="mb-3">
                             <label for="exampleFormControlInput1" class="form-label">{{$prop->name}}</label>
                         </div>
@@ -43,7 +43,7 @@
                             <label for="exampleFormControlInput1" class="form-label">is_multy - {{$prop->is_multy}}</label>
                         </div>
                         <div class="mb-3">
-                            <button type="submit" class="btn btn-danger">удалить</button>
+                            <button type="submit" name="id" value="{{$prop->id}}" class="btn btn-danger">удалить</button>
                         </div>
                     </form>
                 @endforeach

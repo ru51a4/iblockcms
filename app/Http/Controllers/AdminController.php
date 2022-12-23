@@ -187,5 +187,9 @@ class AdminController extends Controller
         return redirect("/admin/" . $iblock_element->iblock_id . "/elementlist");
     }
 
-
+    public function deleteproperty(iblock $iblock, Request $request)
+    {
+        iblock_property::where("id", "=", $request->id)->delete();
+        return redirect("/admin/");
+    }
 }

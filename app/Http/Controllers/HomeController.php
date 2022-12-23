@@ -28,6 +28,7 @@ class HomeController extends Controller
         $els = Iblocks::GetList(1);
         $res = Iblocks::treeToArray($els);
         $tree = $res;
+
         $countSection = array_filter($tree[$id], function ($item) {
             return isset($item["key"]);
         });

@@ -36,6 +36,11 @@
                     @foreach($tree[$id] as $key => $el)
                         @if(isset($el["key"]))
                             <div class="card col-2 p-3">
+                                @foreach($el["elements"] as $item)
+                                    @if(!empty($item["prop"]["is_op"]))
+                                    <img src="{{$item["prop"]["img"]}}" class="card-img-top" alt="...">
+                                    @endif
+                                @endforeach
                                 <a href="/home/{{$key}}">
                                     <span>{{$el["key"]}}</span>
                                 </a>
@@ -48,18 +53,17 @@
             <div class="row">
                 <ul>
                     @if (!empty($tree[$id]["elements"]))
-
                         @foreach($tree[$id]["elements"] as $key => $el)
-                            @if(isset($el["name"]))
+                            @if(isset($el["name"]) && empty($el["prop"]["is_op"]))
                                 <li><a href="/detail/{{$el["id"]}}">{{$el["name"]}}</a>
                                     <ul>
                                         @foreach($el["prop"] as $key => $prop)
                                             @if(is_array($prop))
                                                 <li>{{$key}}</li>
                                                 <select>
-                                                @foreach($prop as $key => $prop)
-                                                    <option>{{$prop}}</option>
-                                                @endforeach
+                                                    @foreach($prop as $key => $prop)
+                                                        <option>{{$prop}}</option>
+                                                    @endforeach
                                                 </select>
                                             @else
                                                 <li>{{$key}} - {{$prop}}</li>
