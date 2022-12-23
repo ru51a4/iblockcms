@@ -24,13 +24,45 @@ class Iblocks
     {
         $res = [];
         foreach ($iblock->properties as $prop) {
+            if ($iblock->id == 1) {
+                continue;
+            }
             $res[] = $prop;
         }
         while ($iblock->parrent_id != 0) {
             $iblock = iblock::find($iblock->parrent_id);
             foreach ($iblock->properties as $prop) {
+                if ($iblock->id == 1) {
+                    continue;
+                }
                 $res[] = $prop;
             }
+        }
+        return $res;
+    }
+
+    public static function getAllProps($iblock)
+    {
+        $res = [];
+        foreach (self::getPropsParrents(iblock::find($iblock)) as $c) {
+            $res[] = $c;
+        }
+        $deep = function ($childs) use (&$res, &$deep) {
+            foreach ($childs as $child) {
+                foreach ($child->properties as $prop) {
+                    $res[] = $prop;
+                }
+            }
+            foreach ($childs as $child) {
+                $c = iblock::where("parrent_id", "=", $child->id)->get();
+                if (count($c)) {
+                    $deep($c);
+                }
+            }
+        };
+        $c = iblock::where("parrent_id", "=", $iblock)->get();
+        if (count($c)) {
+            $deep($c);
         }
         return $res;
     }
@@ -252,6 +284,10 @@ class Iblocks
         }
     }
 
+    public static function getAllPropValue($iblockId)
+    {
+
+    }
 
     public static function treeToArray($tree)
     {
