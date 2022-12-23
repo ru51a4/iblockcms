@@ -159,16 +159,20 @@ class Iblocks
         $el->name = $obj["name"];
         $el->iblock_id = $iblockId;
         $el->save();
-        foreach ($obj["prop"] as $key => $prop) {
+        foreach ($obj["prop"] as $id => $prop) {
+            if (empty($prop)) {
+                continue;
+            }
+            $prop = iblock_property::where("id", "=", $id)->first();
             $count = 0;
             $p = new iblock_prop_value();
             $p->prop_id = $prop->id;
             $p->el_id = $el->id;
             $p->value_id = ++$count;
             //multy shit
-            if (is_array($obj->{$prop->id})) {
+            if (is_array($obj["prop"][$prop->id])) {
                 $count = 0;
-                foreach ($obj->{$prop->id} as $item) {
+                foreach ($obj["prop"][$prop->id] as $item) {
                     $p = new iblock_prop_value();
                     $p->prop_id = $prop->id;
                     $p->el_id = $el->id;
@@ -183,9 +187,9 @@ class Iblocks
             } else {
                 //
                 if ($prop->is_number) {
-                    $p->value_number = (integer)$obj[$prop->id];
+                    $p->value_number = (integer)$obj["prop"][$prop->id];
                 } else {
-                    $p->value = $obj[$prop->id];
+                    $p->value = $obj["prop"][$prop->id];
                 }
                 $p->save();
             }
@@ -208,23 +212,39 @@ class Iblocks
      */
     public static function updateElement($props, $elId)
     {
-        $pp = iblock_property::where("el_id", "=", $elId)->get();
+        $pp = iblock_property::whereHas('propvalue', function ($query) use ($elId) {
+            $query->where('el_id', '=', $elId);
+        })->get();
         foreach ($pp as $p) {
             if (isset($props[$p->name])) {
                 iblock_prop_value::where("el_id", "=", $elId)->where("prop_id", "=", $p->id)->delete();
-                $count = 0;
-                foreach ($props[$p->name] as $item) {
-                    if (empty($item)) {
-                        continue;
+                if (is_array($props[$p->name])) {
+                    $count = 0;
+                    foreach ($props[$p->name] as $item) {
+                        if (empty($item)) {
+                            continue;
+                        }
+                        $c = new iblock_prop_value();
+                        $c->el_id = $elId;
+                        $c->prop_id = $p->id;
+                        $c->value_id = ++$count;
+                        if ($p->is_number) {
+                            $c->value_number = (integer)$item;
+                        } else {
+                            $c->value = $item;
+                        }
+                        $c->save();
                     }
+                } else {
+                    $count = 0;
                     $c = new iblock_prop_value();
                     $c->el_id = $elId;
                     $c->prop_id = $p->id;
                     $c->value_id = ++$count;
                     if ($p->is_number) {
-                        $c->value_number = (integer)$item;
+                        $c->value_number = (integer)$props[$p->name];
                     } else {
-                        $c->value = $item;
+                        $c->value = $props[$p->name];
                     }
                     $c->save();
                 }
