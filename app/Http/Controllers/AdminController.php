@@ -147,13 +147,12 @@ class AdminController extends Controller
             foreach ($cProp as $k) {
                 if ($prop->is_number) {
                     $t["value"][$k["value_id"]] = (isset($k["value_number"])) ? $k["value_number"] : "";
-
                 } else {
                     $t["value"][$k["value_id"]] = (isset($k["value"])) ? $k["value"] : "";
                 }
             }
+            $resProp[] = $t;
         }
-        $resProp[] = $t;
 
         return view('admin/editelement', compact("iblock_element", "resProp"));
     }
@@ -170,7 +169,7 @@ class AdminController extends Controller
             iblock_prop_value::where("el_id", "=", $iblock_element->id)->where("prop_id", "=", $prop->id)->delete();
             $count = 0;
             foreach ($request->{$prop->id} as $item) {
-                if(empty($item)){
+                if (empty($item)) {
                     continue;
                 }
                 $p = new iblock_prop_value();
