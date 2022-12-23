@@ -13,20 +13,24 @@
                     <label>{{$prop["name"]}}</label>
                     @if(!$prop["is_number"])
                         <div class="d-flex flex-column multy-{{$prop["id"]}}">
-                            @foreach($prop["value"] as $id => $p)
-                                <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
-                            @endforeach
-                            @if($prop["is_multy"])
-                                <span onclick="add({{$prop["id"]}}, event)">add</span>
+                            @if (!empty($prop["value"]))
+                                @foreach($prop["value"] as $id => $p)
+                                    <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
+                                @endforeach
+                                @if($prop["is_multy"])
+                                    <span onclick="add({{$prop["id"]}}, event)">add</span>
+                                @endif
                             @endif
                         </div>
                     @else
                         <div class="d-flex flex-column multy-{{$prop["id"]}}">
-                            @foreach($prop["value"] as $id => $p)
-                                <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
-                            @endforeach
-                            @if($prop["is_multy"])
-                                <span onclick="add({{$prop["id"]}}, event)">add</span>
+                            @if (!empty($prop["value"]))
+                                @foreach($prop["value"] as $id => $p)
+                                    <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
+                                @endforeach
+                                @if($prop["is_multy"])
+                                    <span onclick="add({{$prop["id"]}}, event)">add</span>
+                                @endif
                             @endif
                         </div>
                     @endif
