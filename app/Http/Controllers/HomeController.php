@@ -31,6 +31,24 @@ class HomeController extends Controller
         $tree = $res;
         $sectionsDetail = [];
         foreach ($tree as $cId => $c) {
+            $cEls = [];
+            $deep = function ($c) use (&$cEls, &$deep) {
+                if (isset($c["elements"])) {
+                    foreach ($c["elements"] as $cv) {
+                        $cEls[] = $cv;
+                    }
+                }
+                foreach ($c as $key => $value) {
+                    if (is_numeric($key)) {
+                        $deep($c[$key]);
+                    }
+                }
+            };
+            $deep($tree[$cId]);
+            $tree[$cId]["elements"] = [];
+            foreach ($cEls as $cv) {
+                $tree[$cId]["elements"][] = $cv;
+            }
             $sectionsDetail[$cId] = functions::getOpItem($cId);
         }
         $countSection = array_filter($tree[$id], function ($item) {
