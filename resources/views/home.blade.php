@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4 d-flex flex-column">
             <div class="card">
                 <ul>
                     @foreach($tree as $key => $el)
@@ -25,6 +25,38 @@
                                     -
                                 @endfor
                                 <a href="/home/{{$key}}"> {{$el["key"]}}</a></li>
+                        @endif
+                    @endforeach
+                </ul>
+            </div>
+            <div class="card">
+                <ul>
+                    @foreach($allProps as $prop)
+                        @if (!empty($prop->propvalue))
+
+                            <li>
+                                {{$prop->name}}
+                                <ul>
+                                    @if(!$prop->is_number)
+                                        @foreach($prop->propvalue as $value)
+                                            <li>
+                                                <div>
+                                                    <input type="checkbox" name="{{$value->id}}">
+                                                    <label for="scales">{{$value->value}}</label>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    @else
+                                        <li>
+                                            <div>
+                                                <input type="range" id="volume" name="volume"
+                                                       min="{{$prop->propvalue["min"]}}" max="{{$prop->propvalue["max"]}}">
+                                                <label for="volume">{{$prop->propvalue["max"]}}</label>
+                                            </div>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </li>
                         @endif
                     @endforeach
                 </ul>
@@ -76,40 +108,5 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <ul>
-                    @foreach($allProps as $prop)
-                        @if (!empty($prop->propvalue))
 
-                            <li>
-                                {{$prop->name}}
-                                <ul>
-                                    @if(!$prop->is_number)
-                                        @foreach($prop->propvalue as $value)
-                                            <li>
-                                                <div>
-                                                    <input type="checkbox" name="{{$value->id}}">
-                                                    <label for="scales">{{$value->value}}</label>
-                                                </div>
-                                            </li>
-                                        @endforeach
-                                    @else
-                                        <li>
-                                            <div>
-                                                <input type="range" id="volume" name="volume"
-                                                       min="{{$prop->propvalue["min"]}}" max="{{$prop->propvalue["max"]}}">
-                                                <label for="volume">{{$prop->propvalue["max"]}}</label>
-                                            </div>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </li>
-                        @endif
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-    </div>
 @endsection
