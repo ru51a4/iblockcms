@@ -23,6 +23,8 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
 Route::get('/home/{id}', [App\Http\Controllers\HomeController::class, 'index']);
+Route::post('/home', [App\Http\Controllers\HomeController::class, 'index']);
+Route::post('/home/{id}', [App\Http\Controllers\HomeController::class, 'index']);
 Route::get('/detail/{id}', [App\Http\Controllers\HomeController::class, 'detail']);
 
 Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index']);

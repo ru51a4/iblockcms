@@ -71,11 +71,11 @@ class Iblocks
     $where["prop"];
     $where["type"];
     $where["value"];*/
-    public static function GetList($iblockID, $elId = false, $itemPerPage = 5, $page = false, $where = null)
+    public static function GetList($iblockID, $elId = false, $itemPerPage = 5, $page = false, $where = null, $params = null)
     {
         $stack = [$iblockID];
         $res = [];
-        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, $where, $itemPerPage, $page) {
+        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, $where, $itemPerPage, $page, $params) {
             $c[$iblock->id]["key"] = $iblock->name;
             $c[$iblock->id]["path"] = $stack;
             //
@@ -92,6 +92,21 @@ class Iblocks
                             } else {
                                 $query->where("value", $cond["type"], $cond["value"]);
                             }
+                        });
+                    }
+                }
+                if ($params) {
+                    foreach ($params as $id => $param) {
+                        $els->whereHas('propvalue', function ($query) use ($id, $param) {
+                            $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
+                                $param = array_map(function ($id) {
+                                    return iblock_prop_value::find($id)->value;
+                                }, $param);
+                                $query->where('value', '=', $param[0]);
+                                for ($i = 1; $i <= count($param) - 1; $i++) {
+                                    $query->orWhere('value', '=', $param[$i]);
+                                }
+                            });
                         });
                     }
                 }

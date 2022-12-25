@@ -33,6 +33,7 @@
                 </form>
                 @foreach($iblock->properties as $prop)
                     <form action="/admin/{{$iblock->id}}/deletepropery">
+                        @csrf
                         <div class="mb-3">
                             <label for="exampleFormControlInput1" class="form-label">{{$prop->name}}</label>
                         </div>

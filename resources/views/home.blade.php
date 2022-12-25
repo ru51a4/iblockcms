@@ -30,36 +30,43 @@
                 </ul>
             </div>
             <div class="card">
-                <ul>
-                    @foreach($allProps as $prop)
-                        @if (!empty($prop->propvalue))
+                <form method="post" action="/home/{{$id}}">
+                    @csrf
+                    <ul>
+                        @foreach($allProps as $prop)
+                            @if (!empty($prop->propvalue))
 
-                            <li>
-                                {{$prop->name}}
-                                <ul>
-                                    @if(!$prop->is_number)
-                                        @foreach($prop->propvalue as $value)
+                                <li>
+                                    {{$prop->name}}
+                                    <ul>
+                                        @if(!$prop->is_number)
+                                            @foreach($prop->propvalue as $value)
+                                                <li>
+                                                    <div>
+                                                        <input type="checkbox"
+                                                               {{((isset($resParams[$value->prop_id])) && in_array($value->id, $resParams[$value->prop_id])) ? "checked" : ""}}  name="{{$value->prop_id}}-{{$value->id}}">
+                                                        <label for="scales">{{$value->value}}</label>
+                                                    </div>
+                                                </li>
+                                            @endforeach
+                                        @else
                                             <li>
                                                 <div>
-                                                    <input type="checkbox" name="{{$value->id}}">
-                                                    <label for="scales">{{$value->value}}</label>
+                                                    <input type="range" id="volume" name="volume"
+                                                           min="{{$prop->propvalue["min"]}}"
+                                                           max="{{$prop->propvalue["max"]}}">
+                                                    <label for="volume">{{$prop->propvalue["max"]}}</label>
                                                 </div>
                                             </li>
-                                        @endforeach
-                                    @else
-                                        <li>
-                                            <div>
-                                                <input type="range" id="volume" name="volume"
-                                                       min="{{$prop->propvalue["min"]}}" max="{{$prop->propvalue["max"]}}">
-                                                <label for="volume">{{$prop->propvalue["max"]}}</label>
-                                            </div>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </li>
-                        @endif
-                    @endforeach
-                </ul>
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif
+                        @endforeach
+                        <button class="btn btn-primary">filter</button>
+
+                    </ul>
+                </form>
             </div>
         </div>
         <div class="col-md-7">
@@ -103,6 +110,8 @@
                                 </li>
                             @endif
                         @endforeach
+                    @else
+                        <h5>empty</h5>
                     @endif
                 </ul>
             </div>

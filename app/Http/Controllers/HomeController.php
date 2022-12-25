@@ -24,9 +24,19 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index($id = 1)
+    public function index(Request $request, $id = 1)
     {
-        $els = Iblocks::GetList(1);
+        $resParams = [];
+        if ($request) {
+            $params = ($request->toArray());
+            foreach ($params as $key => $param) {
+                if (str_contains($key, "-")) {
+                    $c = explode("-", $key);
+                    $resParams[$c[0]][] = $c[1];
+                }
+            }
+        }
+        $els = Iblocks::GetList(1, false, 5, false, null, $resParams);
         $res = Iblocks::treeToArray($els);
         $tree = $res;
         $sectionsDetail = [];
@@ -72,7 +82,7 @@ class HomeController extends Controller
                 $prop->propvalue = ["min" => $min, "max" => $max];
             }
         }
-        return view('home', compact("tree", "id", "sectionIsset", "sectionsDetail", "allProps"));
+        return view('home', compact("tree", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams"));
     }
 
     public function detail($id)
