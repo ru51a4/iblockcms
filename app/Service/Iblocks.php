@@ -87,24 +87,23 @@ class Iblocks
                         $cond["propId"] = $cProp->id;
                         $els->whereHas('propvalue', function ($query) use ($cond, $cProp) {
                             $query->where('prop_id', '=', $cond["propId"]);
-                            if ($cProp->is_number) {
-                                $query->where("value_number", $cond["type"], $cond["value"]);
-                            } else {
-                                $query->where("value", $cond["type"], $cond["value"]);
-                            }
+                            $type = ($cProp->is_number) ? "value_number" : "value";
+                            $query->where($type, $cond["type"], $cond["value"]);
                         });
                     }
                 }
                 if ($params) {
                     foreach ($params as $id => $param) {
                         $els->whereHas('propvalue', function ($query) use ($id, $param) {
-                            $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
-                                $param = array_map(function ($id) {
-                                    return iblock_prop_value::find($id)->value;
+                            $is_number = iblock_prop_value::find($id)->is_number;
+                            $type = ($is_number) ? "value_number" : "value";
+                            $query->where("prop_id", "=", $id)->where(function ($query) use ($param, $type) {
+                                $param = array_map(function ($id) use ($type) {
+                                    return iblock_prop_value::find($id)->{$type};
                                 }, $param);
-                                $query->where('value', '=', $param[0]);
+                                $query->where($type, '=', $param[0]);
                                 for ($i = 1; $i <= count($param) - 1; $i++) {
-                                    $query->orWhere('value', '=', $param[$i]);
+                                    $query->orWhere($type, '=', $param[$i]);
                                 }
                             });
                         });
@@ -118,28 +117,16 @@ class Iblocks
                     $t = $el->toArray();
                     $t["prop"] = [];
                     foreach ($el->propvalue as $prop) {
-                        if ($prop->prop->is_number) {
-                            if (isset($t["prop"][$prop->prop->name])) {
-                                if (is_array($t["prop"][$prop->prop->name])) {
-                                    $t["prop"][$prop->prop->name][] = $prop->value_number;
-                                } else {
-                                    $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
-                                    $t["prop"][$prop->prop->name][] = $prop->value_number;
-                                }
+                        $type = ($prop->prop->is_number) ? "value_number" : "value";
+                        if (isset($t["prop"][$prop->prop->name])) {
+                            if (is_array($t["prop"][$prop->prop->name])) {
+                                $t["prop"][$prop->prop->name][] = $prop->{$type};
                             } else {
-                                $t["prop"][$prop->prop->name] = $prop->value_number;
+                                $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
+                                $t["prop"][$prop->prop->name][] = $prop->{$type};
                             }
                         } else {
-                            if (isset($t["prop"][$prop->prop->name])) {
-                                if (is_array($t["prop"][$prop->prop->name])) {
-                                    $t["prop"][$prop->prop->name][] = $prop->value;
-                                } else {
-                                    $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
-                                    $t["prop"][$prop->prop->name][] = $prop->value;
-                                }
-                            } else {
-                                $t["prop"][$prop->prop->name] = $prop->value;
-                            }
+                            $t["prop"][$prop->prop->name] = $prop->{$type};
                         }
                     }
                     $c[$iblock->id]["elements"][] = $t;
@@ -167,28 +154,16 @@ class Iblocks
             $t = $el->toArray();
             $t["prop"] = [];
             foreach ($el->propvalue as $prop) {
-                if ($prop->prop->is_number) {
-                    if (isset($t["prop"][$prop->prop->name])) {
-                        if (is_array($t["prop"][$prop->prop->name])) {
-                            $t["prop"][$prop->prop->name][] = $prop->value_number;
-                        } else {
-                            $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
-                            $t["prop"][$prop->prop->name][] = $prop->value_number;
-                        }
+                $type = ($prop->prop->is_number) ? "value_number" : "value";
+                if (isset($t["prop"][$prop->prop->name])) {
+                    if (is_array($t["prop"][$prop->prop->name])) {
+                        $t["prop"][$prop->prop->name][] = $prop->{$type};
                     } else {
-                        $t["prop"][$prop->prop->name] = $prop->value_number;
+                        $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
+                        $t["prop"][$prop->prop->name][] = $prop->{$type};
                     }
                 } else {
-                    if (isset($t["prop"][$prop->prop->name])) {
-                        if (is_array($t["prop"][$prop->prop->name])) {
-                            $t["prop"][$prop->prop->name][] = $prop->value;
-                        } else {
-                            $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
-                            $t["prop"][$prop->prop->name][] = $prop->value;
-                        }
-                    } else {
-                        $t["prop"][$prop->prop->name] = $prop->value;
-                    }
+                    $t["prop"][$prop->prop->name] = $prop->{$type};
                 }
             }
             $res[] = $t;
@@ -297,11 +272,6 @@ class Iblocks
                 }
             }
         }
-    }
-
-    public static function getAllPropValue($iblockId)
-    {
-
     }
 
     public static function treeToArray($tree)
