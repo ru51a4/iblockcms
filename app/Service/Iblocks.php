@@ -20,11 +20,11 @@ class Iblocks
         return array_reverse($res);
     }
 
-    public static function getPropsParrents($iblock)
+    public static function getPropsParrents($iblock, $is_admin = false)
     {
         $res = [];
         foreach ($iblock->properties as $prop) {
-            if ($iblock->id == 1) {
+            if ($iblock->id == 1 && !$is_admin) {
                 continue;
             }
             $res[] = $prop;
@@ -32,7 +32,7 @@ class Iblocks
         while ($iblock->parrent_id != 0) {
             $iblock = iblock::find($iblock->parrent_id);
             foreach ($iblock->properties as $prop) {
-                if ($iblock->id == 1) {
+                if ($iblock->id == 1 && !$is_admin) {
                     continue;
                 }
                 $res[] = $prop;

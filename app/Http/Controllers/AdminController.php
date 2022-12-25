@@ -88,7 +88,7 @@ class AdminController extends Controller
 
     public function addelement(Request $request, iblock $iblock)
     {
-        $props = $iblock->getPropWithParrents();
+        $props = $iblock->getPropWithParrents(true);
         $cProps = [];
         foreach ($props as $prop) {
             $cProps[$prop->id] = $request->{$prop->id};

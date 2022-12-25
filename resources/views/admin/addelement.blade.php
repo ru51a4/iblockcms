@@ -8,7 +8,7 @@
                 <label>Название</label>
                 <input name="name" type="text">
             </div>
-            @foreach($iblock->getPropWithParrents() as $prop)
+            @foreach($iblock->getPropWithParrents(true) as $prop)
                 <div class="form-group">
                     <label>{{$prop->name}}</label>
                     @if(!$prop->is_number)

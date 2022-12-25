@@ -19,9 +19,9 @@ class iblock extends Model
         return $this->hasMany("App\Models\iblock_property");
     }
 
-    public function getPropWithParrents()
+    public function getPropWithParrents($is_admin = false)
     {
-        return \App\Service\Iblocks::getPropsParrents($this);
+        return \App\Service\Iblocks::getPropsParrents($this, $is_admin);
     }
 
 

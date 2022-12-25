@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\iblock_property;
 use App\Service\functions;
 use Illuminate\Http\Request;
 
