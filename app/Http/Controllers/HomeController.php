@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\iblock_prop_value;
 use App\Models\iblock_property;
 use App\Service\functions;
 use Illuminate\Http\Request;
 
 use App\Service\Iblocks;
+use Illuminate\Support\Facades\DB;
 
 
 class HomeController extends Controller
@@ -68,6 +70,14 @@ class HomeController extends Controller
         $sectionIsset = count($countSection);
 
         $allProps = Iblocks::getAllProps($id);
+        $cAllProps = array_map(function ($item) {
+            return $item->id;
+        }, $allProps);
+        $cAllProps = iblock_prop_value::whereIn("prop_id",$cAllProps)->groupBy('value')->get();
+        $allPropValue = [];
+        foreach ($cAllProps as $item){
+            $allPropValue[$item->prop_id][] = $item;
+        }
         foreach ($allProps as $prop) {
             if ($prop->is_number) {
                 $max = 0;
@@ -83,7 +93,7 @@ class HomeController extends Controller
                 $prop->propvalue = ["min" => $min, "max" => $max];
             }
         }
-        return view('home', compact("tree", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams"));
+        return view('home', compact("tree", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue"));
     }
 
     public function detail($id)

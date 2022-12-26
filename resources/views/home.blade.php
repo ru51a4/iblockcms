@@ -43,28 +43,30 @@
                                     {{$prop->name}}
                                     <ul>
                                         @if(!$prop->is_number)
-                                            @foreach($prop->propvalue as $value)
-                                                @php
-                                                    {{
-                                                        $cc = false;
-                                                        if(isset($c[$value->value])){
-                                                        $cc = true;
-                                                    } else{
-                                                            $c[$value->value] = true;
-                                                    }
-                                                    }}
-                                                @endphp
-                                                @if ($cc)
-                                                    @continue
-                                                @endif
-                                                <li>
-                                                    <div>
-                                                        <input type="checkbox"
-                                                               {{((isset($resParams[$value->prop_id])) && in_array($value->id, $resParams[$value->prop_id])) ? "checked" : ""}}  name="{{$value->prop_id}}-{{$value->id}}">
-                                                        <label for="scales">{{$value->value}}</label>
-                                                    </div>
-                                                </li>
-                                            @endforeach
+                                            @if(isset($allPropValue[$prop->id]))
+                                                @foreach($allPropValue[$prop->id] as $value)
+                                                    @php
+                                                        {{
+                                                            $cc = false;
+                                                            if(isset($c[$value->value])){
+                                                            $cc = true;
+                                                        } else{
+                                                                $c[$value->value] = true;
+                                                        }
+                                                        }}
+                                                    @endphp
+                                                    @if ($cc)
+                                                        @continue
+                                                    @endif
+                                                    <li>
+                                                        <div>
+                                                            <input type="checkbox"
+                                                                   {{((isset($resParams[$value->prop_id])) && in_array($value->id, $resParams[$value->prop_id])) ? "checked" : ""}}  name="{{$value->prop_id}}-{{$value->id}}">
+                                                            <label for="scales">{{$value->value}}</label>
+                                                        </div>
+                                                    </li>
+                                                @endforeach
+                                            @endif
                                         @else
                                             <li>
                                                 <div>
