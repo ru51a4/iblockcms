@@ -95,30 +95,25 @@ class Iblocks
                 if (isset($params["param"])) {
                     foreach ($params["param"] as $id => $param) {
                         $els->whereHas('propvalue', function ($query) use ($id, $param) {
-                            $is_number = iblock_property::find($id)->is_number;
-                            $type = ($is_number) ? "value_number" : "value";
-                            $query->where("prop_id", "=", $id)->where(function ($query) use ($param, $type) {
-                                $param = array_map(function ($id) use ($type) {
-                                    return iblock_prop_value::find($id)->{$type};
+                            $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
+                                $param = array_map(function ($id) {
+                                    return iblock_prop_value::find($id)->value;
                                 }, $param);
-                                $query->where($type, '=', $param[0]);
+                                $query->where("value", '=', $param[0]);
                                 for ($i = 1; $i <= count($param) - 1; $i++) {
-                                    $query->orWhere($type, '=', $param[$i]);
+                                    $query->orWhere("value", '=', $param[$i]);
                                 }
                             });
                         });
                     }
                 }
-                if (isset($params["range"]) && false) {
+                if (isset($params["range"])) {
                     foreach ($params["range"] as $id => $param) {
                         $els->whereHas('propvalue', function ($query) use ($id, $param) {
-                            $is_number = iblock_property::find($id)->is_number;
-                            $type = ($is_number) ? "value_number" : "value";
-                            //todo check is exist
-                            $query->where("prop_id", "=", $id)->where(function ($query) use ($param, $type) {
-                                $query->where($type, '>=', $param["from"]);
-                                $query->where($type, '<=', $param["to"]);
-                            });
+                            $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
+                                $query->where("value_number", '>=', $param["from"]);
+                                $query->where("value_number", '<=', $param["to"]);
+                            })->orWhere("prop_id", "!=", $id);
                         });
                     }
                 }
