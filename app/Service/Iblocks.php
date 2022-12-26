@@ -92,8 +92,8 @@ class Iblocks
                         });
                     }
                 }
-                if ($params) {
-                    foreach ($params as $id => $param) {
+                if (isset($params["param"])) {
+                    foreach ($params["param"] as $id => $param) {
                         $els->whereHas('propvalue', function ($query) use ($id, $param) {
                             $is_number = iblock_property::find($id)->is_number;
                             $type = ($is_number) ? "value_number" : "value";
@@ -105,6 +105,19 @@ class Iblocks
                                 for ($i = 1; $i <= count($param) - 1; $i++) {
                                     $query->orWhere($type, '=', $param[$i]);
                                 }
+                            });
+                        });
+                    }
+                }
+                if (isset($params["range"]) && false) {
+                    foreach ($params["range"] as $id => $param) {
+                        $els->whereHas('propvalue', function ($query) use ($id, $param) {
+                            $is_number = iblock_property::find($id)->is_number;
+                            $type = ($is_number) ? "value_number" : "value";
+                            //todo check is exist
+                            $query->where("prop_id", "=", $id)->where(function ($query) use ($param, $type) {
+                                $query->where($type, '>=', $param["from"]);
+                                $query->where($type, '<=', $param["to"]);
                             });
                         });
                     }

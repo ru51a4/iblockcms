@@ -44,7 +44,7 @@
                                                     <li>
                                                         <div>
                                                             <input type="checkbox"
-                                                                   {{((isset($resParams[$value->prop_id])) && in_array($value->id, $resParams[$value->prop_id])) ? "checked" : ""}}  name="{{$value->prop_id}}-{{$value->id}}">
+                                                                   {{((isset($resParams["param"][$value->prop_id])) && in_array($value->id, $resParams["param"][$value->prop_id])) ? "checked" : ""}}  name="{{$value->prop_id}}-{{$value->id}}">
                                                             <label for="scales">{{$value->value}}</label>
                                                         </div>
                                                     </li>
@@ -53,10 +53,30 @@
                                         @else
                                             <li>
                                                 <div>
-                                                    <input type="range" id="volume" name="volume"
-                                                           min="{{$prop->propvalue["min"]}}"
-                                                           max="{{$prop->propvalue["max"]}}">
-                                                    <label for="volume">{{$prop->propvalue["max"]}}</label>
+                                                    <input type="text" class="js-range-slider"
+                                                           name="range_{{$prop->id}}" value=""/>
+                                                    @if(isset($resParams["range"][$prop->id]))
+                                                        <script> $("[name=range_{{$prop->id}}]").ionRangeSlider({
+                                                                type: "double",
+                                                                grid: true,
+                                                                min: {{$prop->propvalue["min"]}},
+                                                                max: {{$prop->propvalue["max"]}},
+                                                                from: {{$resParams["range"][$prop->id]["from"]}},
+                                                                to: {{$resParams["range"][$prop->id]["to"]}},
+                                                                prefix: ""
+                                                            });</script>
+
+                                                    @else
+                                                        <script> $("[name=range_{{$prop->id}}]").ionRangeSlider({
+                                                                type: "double",
+                                                                grid: true,
+                                                                min: {{$prop->propvalue["min"]}},
+                                                                max: {{$prop->propvalue["max"]}},
+                                                                from: {{$prop->propvalue["min"]}},
+                                                                to: {{$prop->propvalue["max"]}},
+                                                                prefix: ""
+                                                            });</script>
+                                                    @endif
                                                 </div>
                                             </li>
                                         @endif

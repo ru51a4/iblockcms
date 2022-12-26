@@ -32,10 +32,17 @@ class HomeController extends Controller
         $resParams = [];
         if ($request) {
             $params = ($request->toArray());
+            $resParams["range"] = [];
             foreach ($params as $key => $param) {
                 if (str_contains($key, "-")) {
                     $c = explode("-", $key);
-                    $resParams[$c[0]][] = $c[1];
+                    $resParams["param"][$c[0]][] = $c[1];
+                }
+                if (str_contains($key, "_") && !str_contains($key, "token")) {
+                    $c = explode("_", $key);
+                    $cc = explode(";", $param);
+                    $resParams["range"][$c[1]]["from"] = $cc[0];
+                    $resParams["range"][$c[1]]["to"] = $cc[1];
                 }
             }
         }
@@ -73,9 +80,9 @@ class HomeController extends Controller
         $cAllProps = array_map(function ($item) {
             return $item->id;
         }, $allProps);
-        $cAllProps = iblock_prop_value::whereIn("prop_id",$cAllProps)->groupBy('value')->get();
+        $cAllProps = iblock_prop_value::whereIn("prop_id", $cAllProps)->groupBy('value')->get();
         $allPropValue = [];
-        foreach ($cAllProps as $item){
+        foreach ($cAllProps as $item) {
             $allPropValue[$item->prop_id][] = $item;
         }
         foreach ($allProps as $prop) {
