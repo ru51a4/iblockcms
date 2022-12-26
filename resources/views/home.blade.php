@@ -137,6 +137,23 @@
                         <h5>empty</h5>
                     @endif
                 </ul>
+                @if(isset($page))
+                    <div class="pagination">
+                        <nav style="margin-left: auto;" aria-label="Page navigation example">
+                            <ul class="pagination">
+                                @if($page - 1 >= 1)
+                                    <li class="page-item"><a class="page-link"
+                                                             href="/home/{{$id}}/{{$page-1}}"><span>prev</span></a></li>
+                                @endif
+                                <li class="page-item page-link active"><span>{{$page}}</span></li>
+                                @if($page + 1 <= ceil($count / 5))
+                                    <li class="page-item"><a class="page-link"
+                                                             href="/home/{{$id}}/{{$page+1}}"><span>next</span></a></li>
+                                @endif
+                            </ul>
+                        </nav>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

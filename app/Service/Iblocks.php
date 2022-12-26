@@ -77,70 +77,13 @@ class Iblocks
     {
         $stack = [$iblockID];
         $res = [];
-        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, $where, $itemPerPage, $page, $params) {
+        $count = 0;
+        $ids = [];
+        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, $where, $itemPerPage, $page, $params, &$count, &$ids) {
             $c[$iblock->id]["key"] = $iblock->name;
             $c[$iblock->id]["path"] = $stack;
-            //
-            if ($iblock->id == $elId || !$elId) {
-                $els = iblock_element::where("iblock_id", "=", $iblock->id);
-                if ($where) {
-                    foreach ($where as $cond) {
-                        $cProp = iblock_property::where("name", "=", $cond["prop"])->first();
-                        $cond["propId"] = $cProp->id;
-                        $els->whereHas('propvalue', function ($query) use ($cond, $cProp) {
-                            $query->where('prop_id', '=', $cond["propId"]);
-                            $type = ($cProp->is_number) ? "value_number" : "value";
-                            $query->where($type, $cond["type"], $cond["value"]);
-                        });
-                    }
-                }
-                if (isset($params["param"])) {
-                    foreach ($params["param"] as $id => $param) {
-                        $els->whereHas('propvalue', function ($query) use ($id, $param) {
-                            $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
-                                $param = array_map(function ($id) {
-                                    return iblock_prop_value::find($id)->value;
-                                }, $param);
-                                $query->where("value", '=', $param[0]);
-                                for ($i = 1; $i <= count($param) - 1; $i++) {
-                                    $query->orWhere("value", '=', $param[$i]);
-                                }
-                            });
-                        });
-                    }
-                }
-                if (isset($params["range"])) {
-                    foreach ($params["range"] as $id => $param) {
-                        $els->whereHas('propvalue', function ($query) use ($id, $param) {
-                            $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
-                                $query->where("value_number", '>=', $param["from"]);
-                                $query->where("value_number", '<=', $param["to"]);
-                            });
-                        });
-                    }
-                }
-                if ($page) {
-                    $els = $els->offset($itemPerPage * ($page - 1))->take($itemPerPage);
-                }
-                $els = $els->get();
-                foreach ($els as $el) {
-                    $t = $el->toArray();
-                    $t["prop"] = [];
-                    foreach ($el->propvalue as $prop) {
-                        $type = ($prop->prop->is_number) ? "value_number" : "value";
-                        if (isset($t["prop"][$prop->prop->name])) {
-                            if (is_array($t["prop"][$prop->prop->name])) {
-                                $t["prop"][$prop->prop->name][] = $prop->{$type};
-                            } else {
-                                $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
-                                $t["prop"][$prop->prop->name][] = $prop->{$type};
-                            }
-                        } else {
-                            $t["prop"][$prop->prop->name] = $prop->{$type};
-                        }
-                    }
-                    $c[$iblock->id]["elements"][] = $t;
-                }
+            if (in_array($elId, $stack)) {
+                $ids[] = $iblock->id;
             }
             //
             $childs = iblock::where("parrent_id", "=", $iblock->id)->get();
@@ -153,6 +96,86 @@ class Iblocks
 
         $iblock = iblock::find($iblockID);
         $getChilds($iblock, $res);
+
+        $els = iblock_element::whereIn("iblock_id", $ids);
+        if ($page) {
+            $els = $els->where("name", "!=", "op");
+        }
+        if ($where) {
+            foreach ($where as $cond) {
+                $cProp = iblock_property::where("name", "=", $cond["prop"])->first();
+                $cond["propId"] = $cProp->id;
+                $els->whereHas('propvalue', function ($query) use ($cond, $cProp) {
+                    $query->where('prop_id', '=', $cond["propId"]);
+                    $type = ($cProp->is_number) ? "value_number" : "value";
+                    $query->where($type, $cond["type"], $cond["value"]);
+                });
+            }
+        }
+        if (isset($params["param"])) {
+            foreach ($params["param"] as $id => $param) {
+                $els->whereHas('propvalue', function ($query) use ($id, $param) {
+                    $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
+                        $param = array_map(function ($id) {
+                            return iblock_prop_value::find($id)->value;
+                        }, $param);
+                        $query->where("value", '=', $param[0]);
+                        for ($i = 1; $i <= count($param) - 1; $i++) {
+                            $query->orWhere("value", '=', $param[$i]);
+                        }
+                    });
+                });
+            }
+        }
+        if (isset($params["range"])) {
+            foreach ($params["range"] as $id => $param) {
+                $els->whereHas('propvalue', function ($query) use ($id, $param) {
+                    $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
+                        $query->where("value_number", '>=', $param["from"]);
+                        $query->where("value_number", '<=', $param["to"]);
+                    });
+                });
+            }
+        }
+
+        $count = $els->get()->count();
+        if ($page) {
+            $els = $els->offset($itemPerPage * ($page - 1))->take($itemPerPage);
+        }
+        $els = $els->get();
+        foreach ($els as $el) {
+            $t = $el->toArray();
+            $t["prop"] = [];
+            foreach ($el->propvalue as $prop) {
+                $type = ($prop->prop->is_number) ? "value_number" : "value";
+                if (isset($t["prop"][$prop->prop->name])) {
+                    if (is_array($t["prop"][$prop->prop->name])) {
+                        $t["prop"][$prop->prop->name][] = $prop->{$type};
+                    } else {
+                        $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
+                        $t["prop"][$prop->prop->name][] = $prop->{$type};
+                    }
+                } else {
+                    $t["prop"][$prop->prop->name] = $prop->{$type};
+                }
+            }
+            $deep = function (&$c) use (&$kek, &$deep, &$el, $t) {
+                foreach ($c as $key => $value) {
+                    if ($key == $el->iblock_id) {
+                        $c[$key]["elements"][] = $t;
+                        return;
+                    }
+                    if (is_numeric($key)) {
+                        $deep($c[$key]);
+                    }
+                }
+            };
+            $deep($res);
+        }
+
+        if ($page) {
+            return ["count" => $count, "res" => $res];
+        }
         return $res;
     }
 
