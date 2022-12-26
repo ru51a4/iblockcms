@@ -35,12 +35,28 @@
                     <ul>
                         @foreach($allProps as $prop)
                             @if (!empty($prop->propvalue))
+                                @php
+                                    {{$c = []; $cc = false;}}
+                                @endphp
 
                                 <li>
                                     {{$prop->name}}
                                     <ul>
                                         @if(!$prop->is_number)
                                             @foreach($prop->propvalue as $value)
+                                                @php
+                                                    {{
+                                                        $cc = false;
+                                                        if(isset($c[$value->value])){
+                                                        $cc = true;
+                                                    } else{
+                                                            $c[$value->value] = true;
+                                                    }
+                                                    }}
+                                                @endphp
+                                                @if ($cc)
+                                                    @continue
+                                                @endif
                                                 <li>
                                                     <div>
                                                         <input type="checkbox"
