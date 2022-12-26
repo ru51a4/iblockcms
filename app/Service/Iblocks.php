@@ -113,7 +113,7 @@ class Iblocks
                             $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
                                 $query->where("value_number", '>=', $param["from"]);
                                 $query->where("value_number", '<=', $param["to"]);
-                            })->orWhere("prop_id", "!=", $id);
+                            });
                         });
                     }
                 }
