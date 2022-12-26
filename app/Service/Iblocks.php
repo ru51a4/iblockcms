@@ -47,6 +47,8 @@ class Iblocks
         foreach (self::getPropsParrents(iblock::find($iblock)) as $c) {
             $res[] = $c;
         }
+        //todo
+        return $res;
         $deep = function ($childs) use (&$res, &$deep) {
             foreach ($childs as $child) {
                 foreach ($child->properties as $prop) {

@@ -32,6 +32,7 @@
             <div class="card">
                 <form method="post" action="/home/{{$id}}">
                     @csrf
+                    <input type="hidden" name="ranges">
                     <ul>
                         @foreach($allProps as $prop)
                             @if (!empty($prop->propvalue))
@@ -63,7 +64,7 @@
                                                                 max: {{$prop->propvalue["max"]}},
                                                                 from: {{$resParams["range"][$prop->id]["from"]}},
                                                                 to: {{$resParams["range"][$prop->id]["to"]}},
-                                                                prefix: ""
+                                                                prefix: "",
                                                             });</script>
 
                                                     @else
@@ -74,7 +75,7 @@
                                                                 max: {{$prop->propvalue["max"]}},
                                                                 from: {{$prop->propvalue["min"]}},
                                                                 to: {{$prop->propvalue["max"]}},
-                                                                prefix: ""
+                                                                prefix: "",
                                                             });</script>
                                                     @endif
                                                 </div>
@@ -84,8 +85,9 @@
                                 </li>
                             @endif
                         @endforeach
-                        <button class="btn btn-primary">filter</button>
-
+                        @if(!empty($allProps))
+                            <button class="btn btn-primary">filter</button>
+                        @endif
                     </ul>
                 </form>
             </div>
