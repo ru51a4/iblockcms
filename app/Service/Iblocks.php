@@ -95,7 +95,7 @@ class Iblocks
                 if ($params) {
                     foreach ($params as $id => $param) {
                         $els->whereHas('propvalue', function ($query) use ($id, $param) {
-                            $is_number = iblock_prop_value::find($id)->is_number;
+                            $is_number = iblock_property::find($id)->is_number;
                             $type = ($is_number) ? "value_number" : "value";
                             $query->where("prop_id", "=", $id)->where(function ($query) use ($param, $type) {
                                 $param = array_map(function ($id) use ($type) {
