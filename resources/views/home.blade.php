@@ -30,9 +30,7 @@
                 </ul>
             </div>
             <div class="card">
-                <form method="post" action="/home/{{$id}}">
-                    @csrf
-                    <input type="hidden" name="ranges">
+                <form method="get" action="/home/{{$id}}">
                     <ul>
                         @foreach($allProps as $prop)
                             @if (!empty($prop->propvalue))
@@ -143,12 +141,12 @@
                             <ul class="pagination">
                                 @if($page - 1 >= 1)
                                     <li class="page-item"><a class="page-link"
-                                                             href="/home/{{$id}}/{{$page-1}}"><span>prev</span></a></li>
+                                                             href="/home/{{$id}}/{{$page-1}}{{$getParams}}"><span>prev</span></a></li>
                                 @endif
                                 <li class="page-item page-link active"><span>{{$page}}</span></li>
                                 @if($page + 1 <= ceil($count / 5))
                                     <li class="page-item"><a class="page-link"
-                                                             href="/home/{{$id}}/{{$page+1}}"><span>next</span></a></li>
+                                                             href="/home/{{$id}}/{{$page+1}}{{$getParams}}"><span>next</span></a></li>
                                 @endif
                             </ul>
                         </nav>

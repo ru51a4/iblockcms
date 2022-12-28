@@ -41,11 +41,23 @@ class Iblocks
         return $res;
     }
 
-    public static function getAllProps($iblock)
+    public static function getAllProps($iblock, $values = false)
     {
         $res = [];
         foreach (self::getPropsParrents(iblock::find($iblock)) as $c) {
             $res[] = $c;
+        }
+        if ($values) {
+            $allProps = $res;
+            $cAllProps = array_map(function ($item) {
+                return $item->id;
+            }, $allProps);
+            $cAllProps = iblock_prop_value::whereIn("prop_id", $cAllProps)->groupBy('value')->get();
+            $allPropValue = [];
+            foreach ($cAllProps as $item) {
+                $allPropValue[$item->prop_id][] = $item;
+            }
+            return ["res" => $res, "values" => $allPropValue];
         }
         //todo
         return $res;
