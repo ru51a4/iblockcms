@@ -34,11 +34,11 @@ class HomeController extends Controller
             $params = ($request->toArray());
             $resParams["range"] = [];
             foreach ($params as $key => $param) {
-                if (str_contains($key, "-")) {
-                    $c = explode("-", $key);
-                    $resParams["param"][$c[0]][] = $c[1];
+                if (str_contains($key, "prop")) {
+                    $c = explode("_", $key);
+                    $resParams["param"][$c[1]] = $param;
                 }
-                if (str_contains($key, "_") && !str_contains($key, "token")) {
+                if (str_contains($key, "range")) {
                     $c = explode("_", $key);
                     $cc = explode(";", $param);
                     $resParams["range"][$c[1]]["from"] = $cc[0];

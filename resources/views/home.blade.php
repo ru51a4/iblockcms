@@ -43,7 +43,7 @@
                                                     <li>
                                                         <div>
                                                             <input type="checkbox"
-                                                                   {{((isset($resParams["param"][$value->prop_id])) && in_array($value->id, $resParams["param"][$value->prop_id])) ? "checked" : ""}}  name="{{$value->prop_id}}-{{$value->id}}">
+                                                                   {{((isset($resParams["param"][$value->prop_id])) && in_array($value->id, $resParams["param"][$value->prop_id])) ? "checked" : ""}}  value="{{$value->id}}" name="prop_{{$value->prop_id}}[]">
                                                             <label for="scales">{{$value->value}}</label>
                                                         </div>
                                                     </li>
