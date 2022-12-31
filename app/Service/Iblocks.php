@@ -6,6 +6,7 @@ use App\Models\iblock;
 use App\Models\iblock_element;
 use App\Models\iblock_property;
 use App\Models\iblock_prop_value;
+use Illuminate\Support\Facades\Cache;
 
 
 class Iblocks
@@ -87,6 +88,11 @@ class Iblocks
     $where["value"];*/
     public static function GetList($iblockID, $elId = false, $itemPerPage = 5, $page = false, $where = null, $params = null)
     {
+        $cacheKey = json_encode([$iblockID, $elId, $itemPerPage, $page, $where, $params]);
+        $cCache = Cache::store('file')->get($cacheKey);
+        if (!empty($cCache)) {
+            return $cCache;
+        }
         $stack = [$iblockID];
         $res = [];
         $count = 0;
@@ -186,8 +192,10 @@ class Iblocks
         }
 
         if ($page) {
+            Cache::store('file')->put($cacheKey, ["count" => $count, "res" => $res], 600);
             return ["count" => $count, "res" => $res];
         }
+        Cache::store('file')->put($cacheKey, $res, 600);
         return $res;
     }
 
