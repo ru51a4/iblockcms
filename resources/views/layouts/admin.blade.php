@@ -56,14 +56,14 @@
     <script type="module" src="/js/admini.min.js"></script>
     <script type="module">
         let sel = document.getElementById("sidebar-selector");
-        sel.addEventListener("change", (ev) => {
+       /* sel.addEventListener("change", (ev) => {
             let color = sel.selectedOptions[0].style.backgroundColor;
             if (color) {
                 document.querySelector(".sidebar-brand").style.backgroundColor = color;
             } else {
                 document.querySelector(".sidebar-brand").style.backgroundColor = "inherit";
             }
-        });
+        });*/
     </script>
     <script type="module">window.admini.init(); // this should go last</script>
 </head>

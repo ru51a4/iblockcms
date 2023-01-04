@@ -53,10 +53,13 @@ class Iblocks
             $cAllProps = array_map(function ($item) {
                 return $item->id;
             }, $allProps);
-            $cAllProps = iblock_prop_value::whereIn("prop_id", $cAllProps)->groupBy('value')->get();
             $allPropValue = [];
-            foreach ($cAllProps as $item) {
-                $allPropValue[$item->prop_id][] = $item;
+            if (!empty($cAllProps)) {
+                $cAllProps = iblock_prop_value::whereIn("prop_id", $cAllProps)->groupBy('value')->get();
+                $allPropValue = [];
+                foreach ($cAllProps as $item) {
+                    $allPropValue[$item->prop_id][] = $item;
+                }
             }
             return ["res" => $res, "values" => $allPropValue];
         }
@@ -238,7 +241,26 @@ class Iblocks
             if (empty($prop)) {
                 continue;
             }
-            $prop = iblock_property::where("id", "=", $id)->first();
+            if (is_int($id)) {
+                $prop = iblock_property::where("id", "=", $id)->first();
+            } else {
+                $prop = iblock_property::where("name", "=", $id)->first();
+            }
+            if (empty($prop)) {
+                $prop = new iblock_property();
+                $prop->name = $id;
+                $prop->iblock_id = $iblockId;
+                if (is_array($prop)) {
+                    $isMulty = true;
+                    $isNumber = is_int($prop[0]);
+                } else {
+                    $isMulty = false;
+                    $isNumber = is_int($prop);
+                }
+                $prop->is_multy = $isMulty;
+                $prop->is_number = $isNumber;
+                $prop->save();
+            }
             $count = 0;
             $p = new iblock_prop_value();
             $p->prop_id = $prop->id;
