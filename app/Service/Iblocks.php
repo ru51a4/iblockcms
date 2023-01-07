@@ -98,7 +98,6 @@ class Iblocks
         }
         $stack = [$iblockID];
         $res = [];
-        $count = 0;
         $ids = [];
         $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, $where, $itemPerPage, $page, $params, &$count, &$ids) {
             $c[$iblock->id]["key"] = $iblock->name;
