@@ -88,7 +88,11 @@ class Iblocks
     /*
     $where["prop"];
     $where["type"];
-    $where["value"];*/
+    $where["value"];
+    $params["range"]["id"]["to"]
+    $params["range"]["id"]["from"]
+    $params["param"][$c[1]] = $param;
+    */
     public static function GetList($iblockID, $elId = false, $itemPerPage = 5, $page = false, $where = null, $params = null)
     {
         $cacheKey = json_encode([$iblockID, $elId, $itemPerPage, $page, $where, $params]);
@@ -99,7 +103,7 @@ class Iblocks
         $stack = [$iblockID];
         $res = [];
         $ids = [];
-        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, $where, $itemPerPage, $page, $params, &$count, &$ids) {
+        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, $where, $itemPerPage, $page, $params, &$ids) {
             $c[$iblock->id]["key"] = $iblock->name;
             $c[$iblock->id]["path"] = $stack;
             if (in_array($elId, $stack)) {
