@@ -125,18 +125,16 @@ class Iblocks
         if ($page) {
             $els = $els->where("name", "!=", "op");
         }
-        if ($where) {
-            foreach ($where as $cond) {
-                $cProp = iblock_property::where("name", "=", $cond["prop"])->first();
-                $els->whereHas('propvalue', function ($query) use ($cond, $cProp) {
+        $els->whereHas('propvalue', function ($query) use ($where, $params) {
+            if ($where) {
+                foreach ($where as $cond) {
+                    $cProp = iblock_property::where("name", "=", $cond["prop"])->first();
                     $query->where('prop_id', '=', $cProp->id);
                     $type = ($cProp->is_number) ? "value_number" : "value";
                     $query->where($type, $cond["type"], $cond["value"]);
-                });
+                }
             }
-        }
-        if (isset($params["param"])) {
-            $els->whereHas('propvalue', function ($query) use ($params) {
+            if (isset($params["param"])) {
                 foreach ($params["param"] as $id => $param) {
                     $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
                         $param = array_map(function ($id) {
@@ -148,16 +146,17 @@ class Iblocks
                         }
                     });
                 }
+            }
+            if (isset($params["range"])) {
                 foreach ($params["range"] as $id => $param) {
                     $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
                         $query->where("value_number", '>=', $param["from"]);
                         $query->where("value_number", '<=', $param["to"]);
                     });
                 }
-            });
-        }
-
-        $count = $els->get()->count();
+            }
+        });
+        $count = $els->count();
         if ($page) {
             $els = $els->offset($itemPerPage * ($page - 1))->take($itemPerPage);
         }
