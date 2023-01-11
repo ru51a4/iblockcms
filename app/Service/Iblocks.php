@@ -128,17 +128,16 @@ class Iblocks
         if ($where) {
             foreach ($where as $cond) {
                 $cProp = iblock_property::where("name", "=", $cond["prop"])->first();
-                $cond["propId"] = $cProp->id;
                 $els->whereHas('propvalue', function ($query) use ($cond, $cProp) {
-                    $query->where('prop_id', '=', $cond["propId"]);
+                    $query->where('prop_id', '=', $cProp->id);
                     $type = ($cProp->is_number) ? "value_number" : "value";
                     $query->where($type, $cond["type"], $cond["value"]);
                 });
             }
         }
         if (isset($params["param"])) {
-            foreach ($params["param"] as $id => $param) {
-                $els->whereHas('propvalue', function ($query) use ($id, $param) {
+            $els->whereHas('propvalue', function ($query) use ($params) {
+                foreach ($params["param"] as $id => $param) {
                     $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
                         $param = array_map(function ($id) {
                             return iblock_prop_value::find($id)->value;
@@ -148,18 +147,18 @@ class Iblocks
                             $query->orWhere("value", '=', $param[$i]);
                         }
                     });
-                });
-            }
+                }
+            });
         }
         if (isset($params["range"])) {
-            foreach ($params["range"] as $id => $param) {
-                $els->whereHas('propvalue', function ($query) use ($id, $param) {
+            $els->whereHas('propvalue', function ($query) use ($params) {
+                foreach ($params["range"] as $id => $param) {
                     $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
                         $query->where("value_number", '>=', $param["from"]);
                         $query->where("value_number", '<=', $param["to"]);
                     });
-                });
-            }
+                }
+            });
         }
 
         $count = $els->get()->count();
