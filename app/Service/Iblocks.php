@@ -129,9 +129,10 @@ class Iblocks
             if ($where) {
                 foreach ($where as $cond) {
                     $cProp = iblock_property::where("name", "=", $cond["prop"])->first();
-                    $query->where('prop_id', '=', $cProp->id);
-                    $type = ($cProp->is_number) ? "value_number" : "value";
-                    $query->where($type, $cond["type"], $cond["value"]);
+                    $query->where('prop_id', '=', $cProp->id)->where(function ($query) use ($cProp, $cond) {
+                        $type = ($cProp->is_number) ? "value_number" : "value";
+                        $query->where($type, $cond["type"], $cond["value"]);
+                    });
                 }
             }
             if (isset($params["param"])) {
