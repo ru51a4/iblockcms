@@ -148,10 +148,6 @@ class Iblocks
                         }
                     });
                 }
-            });
-        }
-        if (isset($params["range"])) {
-            $els->whereHas('propvalue', function ($query) use ($params) {
                 foreach ($params["range"] as $id => $param) {
                     $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
                         $query->where("value_number", '>=', $param["from"]);
