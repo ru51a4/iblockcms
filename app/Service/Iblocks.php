@@ -248,12 +248,12 @@ class Iblocks
                 $prop = new iblock_property();
                 $prop->name = $id;
                 $prop->iblock_id = $iblockId;
-                if (is_array($prop)) {
+                if (is_array($obj["prop"][$id])) {
                     $isMulty = true;
-                    $isNumber = is_int($prop[0]);
+                    $isNumber = is_int($obj["prop"][$id][0]);
                 } else {
                     $isMulty = false;
-                    $isNumber = is_int($prop);
+                    $isNumber = is_int($obj["prop"][$id]);
                 }
                 $prop->is_multy = $isMulty;
                 $prop->is_number = $isNumber;
