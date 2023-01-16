@@ -106,8 +106,7 @@ class HomeController extends Controller
         $el = (Iblocks::ElementsGetList([$id])[0]);
         $id = $el["iblock_id"];
         $tree = Iblocks::GetList(1, $id, 5, 0, null, null);
-        dd($tree);
         $tree = Iblocks::treeToArray($tree);
-        return view('detail', compact("el", "id", "tree"));
+        return view('detail', compact("id", "tree", "el"));
     }
 }
