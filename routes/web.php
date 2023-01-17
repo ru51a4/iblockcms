@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\iblock_element;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +18,25 @@ Route::get('/', function () {
 
 });
 
+
+
+Route::post('/api/login', [\App\Http\Controllers\Api\ApiController::class, "authenticate"]);
+Route::post('/api/register', [\App\Http\Controllers\Api\ApiController::class, "register"]);
+
+Route::group(['middleware' => ['jwt.verify']], function () {
+    Route::get('/api/logout', [\App\Http\Controllers\Api\ApiController::class, "logout"]);
+    Route::post('/api/get_user', [\App\Http\Controllers\Api\ApiController::class, "get_user"]);
+    Route::get('/api/index/{id}/{page}', [\App\Http\Controllers\Api\IndexController::class, "index"]);
+    Route::get('/api/detail/{id}', [\App\Http\Controllers\Api\IndexController::class, "detail"]);
+
+});
+
+
+
 Auth::routes();
+
+
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
 Route::get('/home/{id}', [App\Http\Controllers\HomeController::class, 'index']);
