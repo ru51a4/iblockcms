@@ -8,6 +8,7 @@
     "paths": {
         "/api/index": {
             "get": {
+                "operationId": "1f2c87f5ada1717e8f7b74b9126a3a23",
                 "parameters": [
                     {
                         "name": "id",
