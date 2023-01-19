@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Service\Iblocks;
+use App\Service\functions;
 
 
 class IndexController extends Controller
@@ -50,7 +51,7 @@ class IndexController extends Controller
         $props = Iblocks::getAllProps($id, true);
         $cTree = Iblocks::treeToArray($tree["res"]);
         $cEls = [];
-        $deep = function ($c) use (&$cEls, &$deep) {
+        $deep = function (&$c, $id) use (&$cEls, &$deep) {
             if (isset($c["elements"])) {
                 foreach ($c["elements"] as $cv) {
                     $cEls[] = $cv;
@@ -58,13 +59,14 @@ class IndexController extends Controller
             }
             foreach ($c as $key => $value) {
                 if (is_numeric($key)) {
-                    $deep($c[$key]);
+                    $deep($c[$key], $key);
                 }
             }
+            $c["sectionDetail"] = functions::getOpItem($id);
         };
-        $deep($cTree[$id]);
-
-        return ["tree" => $tree, "props" => $props, "els" => $cEls];
+        $deep($cTree[$id], $id);
+        $kek[$id] = $cTree[$id];
+        return ["count" => $tree["count"], "tree" => $kek, "props" => $props, "els" => $cEls];
 
 
     }
