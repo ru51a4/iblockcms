@@ -49,7 +49,7 @@ class IndexController extends Controller
     {
         $tree = Iblocks::GetList($id, $id, 5, $page, null, []);
         $props = Iblocks::getAllProps($id, true);
-        $cTree = Iblocks::treeToArray($tree["res"]);
+        $cTree = $tree["res"];
         $cEls = [];
         $deep = function (&$c, $id) use (&$cEls, &$deep) {
             if (isset($c["elements"])) {
