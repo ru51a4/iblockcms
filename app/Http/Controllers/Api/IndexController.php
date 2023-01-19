@@ -46,9 +46,29 @@ class IndexController extends Controller
      */
     public function index($id = 1, $page = 1)
     {
-        return Iblocks::GetList(1, $id, 5, $page, null, []);
+        $tree = Iblocks::GetList($id, $id, 5, $page, null, []);
+        $props = Iblocks::getAllProps($id, true);
+        $cTree = Iblocks::treeToArray($tree["res"]);
+        $cEls = [];
+        $deep = function ($c) use (&$cEls, &$deep) {
+            if (isset($c["elements"])) {
+                foreach ($c["elements"] as $cv) {
+                    $cEls[] = $cv;
+                }
+            }
+            foreach ($c as $key => $value) {
+                if (is_numeric($key)) {
+                    $deep($c[$key]);
+                }
+            }
+        };
+        $deep($cTree[$id]);
+
+        return ["tree" => $tree, "props" => $props, "els" => $cEls];
+
 
     }
+
     /**
      * @OA\Get(
      * path="/api/detail/{id}",
