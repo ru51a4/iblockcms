@@ -36,6 +36,29 @@
                     }
                 }
             }
+        },
+        "/api/detail": {
+            "get": {
+                "operationId": "b11e14dd6c71247a742399ad62246377",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "el info",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
         }
     }
 }
