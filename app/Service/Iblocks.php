@@ -231,7 +231,10 @@ class Iblocks
      */
     public static function addElement($obj, $iblockId)
     {
-        $el = new iblock_element();
+        $el = iblock_element::where("name", "=", $obj["name"])->first();
+        if (empty($el)) {
+            $el = new iblock_element();
+        }
         $el->name = $obj["name"];
         $el->iblock_id = $iblockId;
         $el->save();
@@ -258,6 +261,8 @@ class Iblocks
                 $prop->is_multy = $isMulty;
                 $prop->is_number = $isNumber;
                 $prop->save();
+            } else {
+                iblock_prop_value::where("el_id", "=", $el->id)->where("prop_id", "=", $prop->id)->delete();
             }
             $count = 0;
             $p = new iblock_prop_value();
