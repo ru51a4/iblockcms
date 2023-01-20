@@ -35,6 +35,8 @@
                                             @foreach($prop["value"] as $id => $p)
                                                 <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
                                             @endforeach
+                                        @else
+                                            <input type="text" name="{{$prop["id"]}}[]" value="">
                                         @endif
                                         @if($prop["is_multy"])
                                             <span onclick="add({{$prop["id"]}}, event)">add</span>
@@ -47,6 +49,8 @@
                                             @foreach($prop["value"] as $id => $p)
                                                 <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
                                             @endforeach
+                                        @else
+                                            <input type="text" name="{{$prop["id"]}}[]" value="">
                                         @endif
                                         @if($prop["is_multy"])
                                             <span onclick="add({{$prop["id"]}}, event)">add</span>
@@ -69,6 +73,8 @@
                                             @foreach($prop["value"] as $id => $p)
                                                 <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
                                             @endforeach
+                                        @else
+                                            <input type="text" name="{{$prop["id"]}}[]" value="">
                                         @endif
                                         @if($prop["is_multy"])
                                             <span onclick="add({{$prop["id"]}}, event)">add</span>
@@ -81,6 +87,8 @@
                                             @foreach($prop["value"] as $id => $p)
                                                 <input type="text" name="{{$prop["id"]}}[]" value="{{$p}}">
                                             @endforeach
+                                        @else
+                                            <input type="text" name="{{$prop["id"]}}[]" value="">
                                         @endif
                                         @if($prop["is_multy"])
                                             <span onclick="add({{$prop["id"]}}, event)">add</span>
@@ -104,6 +112,7 @@
             $(parinput).attr("name", `${id}[]`);
             $(e.target.parentElement).append(parinput)
         }
+
         document.addEventListener("DOMContentLoaded", () => {
 
             var triggerTabList = [].slice.call(document.querySelectorAll('#pills-tab button'))
