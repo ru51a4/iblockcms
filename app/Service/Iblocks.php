@@ -265,9 +265,9 @@ class Iblocks
             $p->el_id = $el->id;
             $p->value_id = ++$count;
             //multy shit
-            if (is_array($obj["prop"][$prop->id])) {
+            if (is_array($obj["prop"][$id])) {
                 $count = 0;
-                foreach ($obj["prop"][$prop->id] as $item) {
+                foreach ($obj["prop"][$id] as $item) {
                     $p = new iblock_prop_value();
                     $p->prop_id = $prop->id;
                     $p->el_id = $el->id;
@@ -282,9 +282,9 @@ class Iblocks
             } else {
                 //
                 if ($prop->is_number) {
-                    $p->value_number = (integer)$obj["prop"][$prop->id];
+                    $p->value_number = (integer)$obj["prop"][$id];
                 } else {
-                    $p->value = $obj["prop"][$prop->id];
+                    $p->value = $obj["prop"][$id];
                 }
                 $p->save();
             }
@@ -299,6 +299,7 @@ class Iblocks
             $el->parrent_id = $parentId;
         }
         $el->save();
+        return $el->id;
     }
 
     /**

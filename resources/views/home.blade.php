@@ -29,8 +29,8 @@
                     @endforeach
                 </ul>
             </div>
-            <div class="card">
-                <form method="get" action="/home/{{$id}}">
+            <form method="get" action="/home/{{$id}}">
+                <div class="card" style="overflow: auto;max-height: 70vh;">
                     <ul>
                         @foreach($allProps as $prop)
                             @if (!empty($prop->propvalue))
@@ -43,7 +43,8 @@
                                                     <li>
                                                         <div>
                                                             <input type="checkbox"
-                                                                   {{((isset($resParams["param"][$value->prop_id])) && in_array($value->id, $resParams["param"][$value->prop_id])) ? "checked" : ""}}  value="{{$value->id}}" name="prop_{{$value->prop_id}}[]">
+                                                                   {{((isset($resParams["param"][$value->prop_id])) && in_array($value->id, $resParams["param"][$value->prop_id])) ? "checked" : ""}}  value="{{$value->id}}"
+                                                                   name="prop_{{$value->prop_id}}[]">
                                                             <label for="scales">{{$value->value}}</label>
                                                         </div>
                                                     </li>
@@ -83,12 +84,14 @@
                                 </li>
                             @endif
                         @endforeach
-                        @if(!empty($allProps))
-                            <button class="btn btn-primary">filter</button>
-                        @endif
+
                     </ul>
-                </form>
-            </div>
+                </div>
+                @if(!empty($allProps))
+                    <button class="btn btn-primary">filter</button>
+                @endif
+            </form>
+
         </div>
         <div class="col-md-7">
             @if($sectionIsset != 0)
@@ -141,12 +144,14 @@
                             <ul class="pagination">
                                 @if($page - 1 >= 1)
                                     <li class="page-item"><a class="page-link"
-                                                             href="/home/{{$id}}/{{$page-1}}{{$getParams}}"><span>prev</span></a></li>
+                                                             href="/home/{{$id}}/{{$page-1}}{{$getParams}}"><span>prev</span></a>
+                                    </li>
                                 @endif
                                 <li class="page-item page-link active"><span>{{$page}}</span></li>
                                 @if($page + 1 <= ceil($count / 5))
                                     <li class="page-item"><a class="page-link"
-                                                             href="/home/{{$id}}/{{$page+1}}{{$getParams}}"><span>next</span></a></li>
+                                                             href="/home/{{$id}}/{{$page+1}}{{$getParams}}"><span>next</span></a>
+                                    </li>
                                 @endif
                             </ul>
                         </nav>

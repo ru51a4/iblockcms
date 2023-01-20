@@ -46,7 +46,8 @@ class HomeController extends Controller
                 }
             }
         }
-        $c = Iblocks::GetList(1, $id, 5, $page, null, $resParams);
+
+        $c = Iblocks::GetList(1, $id, 5, $page, false, $resParams);
         $els = $c["res"];
         $count = $c["count"];
         $res = Iblocks::treeToArray($els);
