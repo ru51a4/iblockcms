@@ -95,11 +95,11 @@ class Iblocks
     */
     public static function GetList($iblockID, $elId = false, $itemPerPage = 5, $page = false, $where = null, $params = null)
     {
-        $cacheKey = json_encode([$iblockID, $elId, $itemPerPage, $page, $where, $params]);
+        /*$cacheKey = json_encode([$iblockID, $elId, $itemPerPage, $page, $where, $params]);
         $cCache = Cache::store('file')->get($cacheKey);
         if (!empty($cCache)) {
             return $cCache;
-        }
+        }*/
         $stack = [$iblockID];
         $res = [];
         $ids = [];
@@ -125,18 +125,20 @@ class Iblocks
         if ($page) {
             $els = $els->where("name", "!=", "op");
         }
-        $els->whereHas('propvalue', function ($query) use ($where, $params) {
-            if ($where) {
-                foreach ($where as $cond) {
+        if ($where) {
+            foreach ($where as $cond) {
+                $els->whereHas('propvalue', function ($query) use ($cond) {
                     $cProp = iblock_property::where("name", "=", $cond["prop"])->first();
                     $query->where('prop_id', '=', $cProp->id)->where(function ($query) use ($cProp, $cond) {
                         $type = ($cProp->is_number) ? "value_number" : "value";
                         $query->where($type, $cond["type"], $cond["value"]);
                     });
-                }
+                });
             }
-            if (isset($params["param"])) {
-                foreach ($params["param"] as $id => $param) {
+        }
+        if (isset($params["param"])) {
+            foreach ($params["param"] as $id => $param) {
+                $els->whereHas('propvalue', function ($query) use ($id, $param) {
                     $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
                         $param = array_map(function ($id) {
                             return iblock_prop_value::find($id)->value;
@@ -146,17 +148,19 @@ class Iblocks
                             $query->orWhere("value", '=', $param[$i]);
                         }
                     });
-                }
+                });
             }
-            if (isset($params["range"])) {
-                foreach ($params["range"] as $id => $param) {
+        }
+        if (isset($params["range"])) {
+            foreach ($params["range"] as $id => $param) {
+                $els->whereHas('propvalue', function ($query) use ($id, $param) {
                     $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
                         $query->where("value_number", '>=', $param["from"]);
                         $query->where("value_number", '<=', $param["to"]);
                     });
-                }
+                });
             }
-        });
+        }
         $count = $els->count();
         if ($page) {
             $els = $els->offset($itemPerPage * ($page - 1))->take($itemPerPage);
@@ -193,10 +197,10 @@ class Iblocks
         }
 
         if ($page) {
-            Cache::store('file')->put($cacheKey, ["count" => $count, "res" => $res], 600);
+            //Cache::store('file')->put($cacheKey, ["count" => $count, "res" => $res], 600);
             return ["count" => $count, "res" => $res];
         }
-        Cache::store('file')->put($cacheKey, $res, 600);
+        //Cache::store('file')->put($cacheKey, $res, 600);
         return $res;
     }
 
