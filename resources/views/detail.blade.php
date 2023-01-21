@@ -30,8 +30,9 @@
             </div>
         </div>
         <div class="col-md-7">
-            <div class="row">
-                <div class="d-flex flex-row justify-content-start">
+
+            <div class="card">
+                <div class="p-2 d-flex flex-row justify-content-start">
                     <div>
                         <img src="http://ufland.moy.su/camera_a.gif">
                     </div>

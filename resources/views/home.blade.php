@@ -95,7 +95,7 @@
         </div>
         <div class="col-md-7">
             @if($sectionIsset != 0)
-                <div class="row mb-4">
+                <div class="mb-4">
                     @foreach($tree[$id] as $key => $el)
                         @if(isset($el["key"]))
                             <div class="card col-2 p-3">
@@ -111,26 +111,39 @@
                 </div>
             @endif
 
-            <div class="row">
+            <style>
+                .el li {
+                    list-style-type: none; /* Убираем маркеры */
+                }
+
+                .el ul {
+                    margin-left: 0; /* Отступ слева в браузере IE и Opera */
+                    padding-left: 0; /* Отступ слева в браузере Firefox, Safari, Chrome */
+                }
+            </style>
+            <div class="el">
                 <ul>
                     @if (!empty($tree[$id]["elements"]))
                         @foreach($tree[$id]["elements"] as $key => $el)
                             @if(isset($el["name"]) && empty($el["prop"]["is_op"]))
-                                <li><a href="/detail/{{$el["id"]}}">{{$el["name"]}}</a>
-                                    <ul>
-                                        @foreach($el["prop"] as $key => $prop)
-                                            @if(is_array($prop))
-                                                <li>{{$key}}</li>
-                                                <select>
-                                                    @foreach($prop as $key => $prop)
-                                                        <option>{{$prop}}</option>
-                                                    @endforeach
-                                                </select>
-                                            @else
-                                                <li>{{$key}} - {{$prop}}</li>
-                                            @endif
-                                        @endforeach
-                                    </ul>
+                                <li class="card mb-4">
+                                    <div class="p-2">
+                                        <a href="/detail/{{$el["id"]}}">{{$el["name"]}}</a>
+                                        <ul>
+                                            @foreach($el["prop"] as $key => $prop)
+                                                @if(is_array($prop))
+                                                    <li>{{$key}}</li>
+                                                    <select>
+                                                        @foreach($prop as $key => $prop)
+                                                            <option>{{$prop}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                @else
+                                                    <li>{{$key}} - {{$prop}}</li>
+                                                @endif
+                                            @endforeach
+                                        </ul>
+                                    </div>
                                 </li>
                             @endif
                         @endforeach
