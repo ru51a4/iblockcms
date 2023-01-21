@@ -243,9 +243,9 @@ class Iblocks
                 continue;
             }
             if (is_int($id)) {
-                $prop = iblock_property::where("id", "=", $id)->first();
+                $prop = iblock_property::where("id", "=", $id)->where("iblock_id", "=", $iblockId)->first();
             } else {
-                $prop = iblock_property::where("name", "=", $id)->first();
+                $prop = iblock_property::where("name", "=", $id)->where("iblock_id", "=", $iblockId)->first();
             }
             if (empty($prop)) {
                 $prop = new iblock_property();
