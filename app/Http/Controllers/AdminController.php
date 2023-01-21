@@ -135,6 +135,9 @@ class AdminController extends Controller
         $iblock_element->update();
         $c = [];
         foreach ($props as $p) {
+            if (empty($request->{$p->id})) {
+                continue;
+            }
             $c[$p->name] = $request->{$p->id};
         }
         Iblocks::updateElement($c, $iblock_element->id);

@@ -313,10 +313,8 @@ class Iblocks
      */
     public static function updateElement($props, $elId)
     {
-        $pp = iblock_property::whereHas('propvalue', function ($query) use ($elId) {
-            $query->where('el_id', '=', $elId);
-        })->get();
-        foreach ($pp as $p) {
+        foreach ($props as $key => $p) {
+            $p = iblock_property::where("name", "=", $key)->first();
             if (isset($props[$p->name])) {
                 iblock_prop_value::where("el_id", "=", $elId)->where("prop_id", "=", $p->id)->delete();
                 if (is_array($props[$p->name])) {
