@@ -242,10 +242,14 @@ class Iblocks
             if (empty($prop)) {
                 continue;
             }
+            $propsIds = self::getAllProps($iblockId, false);
+            $propsIds = array_map(function ($prop) {
+                return $prop->id;
+            }, $propsIds);
             if (is_int($id)) {
-                $prop = iblock_property::where("id", "=", $id)->where("iblock_id", "=", $iblockId)->first();
+                $prop = iblock_property::where("id", "=", $id)->whereIn("id", $propsIds)->first();
             } else {
-                $prop = iblock_property::where("name", "=", $id)->where("iblock_id", "=", $iblockId)->first();
+                $prop = iblock_property::where("name", "=", $id)->whereIn("id", $propsIds)->first();
             }
             if (empty($prop)) {
                 $prop = new iblock_property();
