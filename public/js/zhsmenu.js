@@ -50,7 +50,7 @@ class zhsmenu {
         document.querySelectorAll(".zhs-menu--items--item").forEach((el) => {
             el.addEventListener("mousemove", (item) => {
                 let data = el.getAttribute("data");
-                document.querySelectorAll(`[parrent="${data}"]`)[0].parentElement.style.marginTop = el.offsetTop+"px";
+                document.querySelectorAll(`[parrent="${data}"]`)[0].parentElement.style.marginTop = (el.offsetTop-1)+"px";
                 let lvl = document.querySelectorAll(`[parrent="${data}"]`)[0].getAttribute("lvl");
 
                 for (let i = parseInt(lvl); i <= maxLvl; i++) {

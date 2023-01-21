@@ -206,6 +206,7 @@
             .zhs-menu .zhs-menu--items {
                 display: inline-flex;
                 flex-direction: column;
+                background-color: transparent;
             }
 
             .zhs-menu .zhs-menu--items--item {
