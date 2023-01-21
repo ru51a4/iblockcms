@@ -4,6 +4,9 @@
     <div class="row">
         <div class="col-6 m-2">
             @foreach($tree[$id]["path"] as $item)
+                @if(array_values($tree[$id]["path"])[0] != $item)
+                    /
+                @endif
                 <a href="/home/{{$item}}/">{{$tree[$item]["key"]}}</a>
             @endforeach
         </div>
