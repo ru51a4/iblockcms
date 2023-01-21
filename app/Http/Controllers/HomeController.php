@@ -99,7 +99,26 @@ class HomeController extends Controller
             }
         }
         $getParams = functions::getParams();
-        return view('home', compact("tree", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "count", "getParams"));
+        //zhsmenu
+        $zhsmenu = ["childrens" => []];
+        $deep = function (&$c) use (&$deep) {
+            $q["title"] = $c["key"];
+            $q["url"] = "/home/" . end($c["path"]);
+            if(!isset($q["childrens"])){
+                $q["childrens"] = [];
+            }
+            foreach ($c as $key => $value) {
+                if (is_numeric($key)) {
+                    $q["childrens"][] = $deep($c[$key]);
+                }
+            }
+            return $q;
+        };
+
+        $zhsmenu["childrens"][] = $deep($tree[1]);
+        $zhsmenu = json_encode($zhsmenu);
+        //
+        return view('home', compact("tree", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "count", "getParams", "zhsmenu"));
     }
 
     public function detail($id)
@@ -108,6 +127,26 @@ class HomeController extends Controller
         $id = $el["iblock_id"];
         $tree = Iblocks::GetList(1, $id, 5, 0, null, null);
         $tree = Iblocks::treeToArray($tree);
-        return view('detail', compact("id", "tree", "el"));
+
+        //zhsmenu
+        $zhsmenu = ["childrens" => []];
+        $deep = function (&$c) use (&$deep) {
+            $q["title"] = $c["key"];
+            $q["url"] = "/home/" . end($c["path"]);
+            if(!isset($q["childrens"])){
+                $q["childrens"] = [];
+            }
+            foreach ($c as $key => $value) {
+                if (is_numeric($key)) {
+                    $q["childrens"][] = $deep($c[$key]);
+                }
+            }
+            return $q;
+        };
+
+        $zhsmenu["childrens"][] = $deep($tree[1]);
+        $zhsmenu = json_encode($zhsmenu);
+
+        return view('detail', compact("id", "tree", "el", "zhsmenu"));
     }
 }

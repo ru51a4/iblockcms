@@ -61,7 +61,12 @@
             </div>
         </div>
     </div>
-
+    @section('zhsmenu')
+        <script>
+            let zhs = new zhsmenu({!! $zhsmenu !!});
+            zhs.init(".zhs");
+        </script>
+    @endsection
 @endsection
 
 

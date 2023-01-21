@@ -13,7 +13,8 @@
 
     <!-- Bootstrap core CSS -->
     <!--Plugin CSS file with desired skin-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
 
     <!--jQuery-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -26,9 +27,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
             crossorigin="anonymous"></script>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
-    <script src="/js/app.js"></script>
     <style>
         .container {
             background: white;
@@ -151,6 +150,7 @@
     <link rel="mask-icon" href="/docs/5.0/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
     <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
     <meta name="theme-color" content="#7952b3">
+    <script src="/js/zhsmenu.js"></script>
 
 
     <style>
@@ -174,7 +174,7 @@
 <body>
 
 <div class="container py-4">
-    <header class="pb-3 mb-4 border-bottom d-flex flex-row justify-content-between">
+    <header class="pb-3 mb-4 border-bottom d-flex flex-row justify-content-start">
         <div class="logo">
             <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="32" class="me-2" viewBox="0 0 118 94"
@@ -184,8 +184,53 @@
                           fill="currentColor"></path>
                 </svg>
                 <span class="fs-4">IBLOCK CMS</span>
-            </a></div>
+            </a>
 
+        </div>
+        <style>
+            .zhs {
+                position: absolute;
+                z-index: 100;
+                background: white;
+                display: none;
+            }
+
+            .zhs-menu-event:hover .zhs {
+                display: block;
+            }
+
+            .zhs-menu {
+                display: flex;
+            }
+
+            .zhs-menu .zhs-menu--items {
+                display: inline-flex;
+                flex-direction: column;
+            }
+
+            .zhs-menu .zhs-menu--items--item {
+                height: 50px;
+                margin: 1px;
+                transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+                border-radius: .25rem;
+                padding: .5rem 1rem;
+                display: block;
+                cursor: pointer;
+                color: #fff;
+                background-color: #0d6efd;
+            }
+            .zhs-menu .zhs-menu--items--item a{
+                color: white;
+                text-decoration: none;
+            }
+        </style>
+        <ul class="nav nav-pills">
+            <li class="nav-item zhs-menu-event"><a href="#" class="nav-link">Каталог</a>
+                <div class="zhs"></div>
+            </li>
+
+        </ul>
+        @yield('zhsmenu')
 
     </header>
     @yield('content')
