@@ -55,7 +55,6 @@ class Iblocks
             }, $allProps);
             $allPropValue = [];
             if (!empty($cAllProps)) {
-                $allPropValue = [];
                 foreach ($cAllProps as $id) {
                     $c = iblock_prop_value::where("prop_id", "=", $id)->groupBy('value')->get();
                     foreach ($c as $item) {
