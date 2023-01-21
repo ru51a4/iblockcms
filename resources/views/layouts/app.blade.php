@@ -225,7 +225,7 @@
                 text-decoration: none;
             }
         </style>
-        <ul class="nav nav-pills">
+        <ul class="d-xl-block d-none nav nav-pills">
             <li class="nav-item zhs-menu-event"><a href="#" class="nav-link">Каталог</a>
                 <div class="zhs"></div>
             </li>
