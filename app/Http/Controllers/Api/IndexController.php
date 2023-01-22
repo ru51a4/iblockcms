@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Service\Iblocks;
 use App\Service\functions;
+use Illuminate\Support\Facades\Cache;
 
 
 class IndexController extends Controller
@@ -67,8 +68,6 @@ class IndexController extends Controller
         $deep($cTree[$id], $id);
         $kek[$id] = $cTree[$id];
         return ["count" => $tree["count"], "tree" => $kek, "props" => $props, "els" => $cEls];
-
-
     }
 
     /**

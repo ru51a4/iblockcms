@@ -56,7 +56,7 @@ class Iblocks
             $allPropValue = [];
             if (!empty($cAllProps)) {
                 foreach ($cAllProps as $id) {
-                    $c = iblock_prop_value::where("prop_id", "=", $id)->groupBy('value')->get();
+                    $c = iblock_prop_value::where("prop_id", "=", $id)->get()->unique("value");
                     foreach ($c as $item) {
                         $allPropValue[$item->prop_id][] = $item;
                     }
@@ -96,11 +96,6 @@ class Iblocks
     */
     public static function GetList($iblockID, $elId = false, $itemPerPage = 5, $page = false, $where = null, $params = null)
     {
-        /*$cacheKey = json_encode([$iblockID, $elId, $itemPerPage, $page, $where, $params]);
-        $cCache = Cache::store('file')->get($cacheKey);
-        if (!empty($cCache)) {
-            return $cCache;
-        }*/
         $stack = [$iblockID];
         $res = [];
         $ids = [];
@@ -122,7 +117,7 @@ class Iblocks
         $iblock = iblock::find($iblockID);
         $getChilds($iblock, $res);
 
-        $els = iblock_element::whereIn("iblock_id", $ids);
+        $els = iblock_element::with("propvalue.prop")->whereIn("iblock_id", $ids);
         if ($page) {
             $els = $els->where("name", "!=", "op");
         }
@@ -170,19 +165,20 @@ class Iblocks
         foreach ($els as $el) {
             $t = $el->toArray();
             $t["prop"] = [];
-            foreach ($el->propvalue as $prop) {
-                $type = ($prop->prop->is_number) ? "value_number" : "value";
-                if (isset($t["prop"][$prop->prop->name])) {
-                    if (is_array($t["prop"][$prop->prop->name])) {
-                        $t["prop"][$prop->prop->name][] = $prop->{$type};
+            foreach ($el["propvalue"] as $prop) {
+                $type = ($prop["prop"]["is_number"]) ? "value_number" : "value";
+                if (isset($t["prop"][$prop["prop"]["name"]])) {
+                    if (is_array($t["prop"][$prop["prop"]["name"]])) {
+                        $t["prop"][$prop["prop"]["name"]][] = $prop[$type];
                     } else {
-                        $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
-                        $t["prop"][$prop->prop->name][] = $prop->{$type};
+                        $t["prop"][$prop["prop"]["name"]] = [$t["prop"][$prop["prop"]["name"]]];
+                        $t["prop"][$prop["prop"]["name"]][] = $prop[$type];
                     }
                 } else {
-                    $t["prop"][$prop->prop->name] = $prop->{$type};
+                    $t["prop"][$prop["prop"]["name"]] = $prop[$type];
                 }
             }
+            unset($el["propvalue"]);
             $deep = function (&$c) use (&$kek, &$deep, &$el, $t) {
                 foreach ($c as $key => $value) {
                     if ($key == $el->iblock_id) {
@@ -198,33 +194,32 @@ class Iblocks
         }
 
         if ($page) {
-            //Cache::store('file')->put($cacheKey, ["count" => $count, "res" => $res], 600);
             return ["count" => $count, "res" => $res];
         }
-        //Cache::store('file')->put($cacheKey, $res, 600);
         return $res;
     }
 
     public static function ElementsGetList($ids)
     {
-        $els = iblock_element::whereIn('id', $ids)->get();
+        $els = iblock_element::with("propvalue.prop")->whereIn('id', $ids)->get();
         $res = [];
         foreach ($els as $el) {
             $t = $el->toArray();
             $t["prop"] = [];
-            foreach ($el->propvalue as $prop) {
-                $type = ($prop->prop->is_number) ? "value_number" : "value";
-                if (isset($t["prop"][$prop->prop->name])) {
-                    if (is_array($t["prop"][$prop->prop->name])) {
-                        $t["prop"][$prop->prop->name][] = $prop->{$type};
+            foreach ($el["propvalue"] as $prop) {
+                $type = ($prop["prop"]["is_number"]) ? "value_number" : "value";
+                if (isset($t["prop"][$prop["prop"]["name"]])) {
+                    if (is_array($t["prop"][$prop["prop"]["name"]])) {
+                        $t["prop"][$prop["prop"]["name"]][] = $prop[$type];
                     } else {
-                        $t["prop"][$prop->prop->name] = [$t["prop"][$prop->prop->name]];
-                        $t["prop"][$prop->prop->name][] = $prop->{$type};
+                        $t["prop"][$prop["prop"]["name"]] = [$t["prop"][$prop["prop"]["name"]]];
+                        $t["prop"][$prop["prop"]["name"]][] = $prop[$type];
                     }
                 } else {
-                    $t["prop"][$prop->prop->name] = $prop->{$type};
+                    $t["prop"][$prop["prop"]["name"]] = $prop[$type];
                 }
             }
+            unset($el["propvalue"]);
             $res[] = $t;
         }
         return $res;
@@ -236,10 +231,10 @@ class Iblocks
      */
     public static function addElement($obj, $iblockId)
     {
-        $el = iblock_element::where("name", "=", $obj["name"])->first();
-        if (empty($el)) {
-            $el = new iblock_element();
-        }
+        //$el = iblock_element::where("name", "=", $obj["name"])->first();
+        //if (empty($el)) {
+        $el = new iblock_element();
+        //}
         $el->name = $obj["name"];
         $el->iblock_id = $iblockId;
         $el->save();

@@ -125,7 +125,7 @@ class HomeController extends Controller
     {
         $el = (Iblocks::ElementsGetList([$id])[0]);
         $id = $el["iblock_id"];
-        $tree = Iblocks::GetList(1, $id, 5, 0, null, null);
+        $tree = Iblocks::GetList(1, null, 5, null, null, null);
         $tree = Iblocks::treeToArray($tree);
 
         //zhsmenu

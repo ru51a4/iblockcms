@@ -47,18 +47,12 @@
             font-weight: bold;
         }
 
-        .card:not(:last-child) {
-            border-bottom: 0px !important;
-        }
 
         .card {
             border-radius: 0px !important;
             padding: 0px !important;
         }
 
-        a:not(:last-child) .card {
-            border-bottom: 0px !important;
-        }
 
         .card-avatar {
             margin-top: 5px;
@@ -69,9 +63,6 @@
             text-decoration: auto;
         }
 
-        .auth .nickname-author {
-            margin-right: 10px;
-        }
 
         .container {
             background-color: white !important;
@@ -93,53 +84,17 @@
             justify-self: flex-end;
         }
 
-        .card-body {
-            justify-content: space-between !important;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-bottom {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .reply div {
-            color: black !important;
-        }
-
         footer {
             margin-top: auto !important;
         }
 
-        .card-text {
-            word-break: break-all;
-        }
-
-        .card-avatar {
-            max-width: 10%;
-            min-width: 100px;
-        }
-
-        .status {
-            font-weight: 100;
-            font-size: 12px;
-            margin: 0px !important;
-        }
 
         body {
             display: flex;
             justify-content: center;
         }
 
-        .post_image {
-            max-width: 300px;
-        }
 
-        .reply {
-            cursor: pointer;
-            background-color: #f6993f;
-        }
     </style>
 
     <!-- Favicons -->

@@ -155,22 +155,27 @@
                     @endif
                 </ul>
                 @if(isset($page))
-                    <div class="pagination">
-                        <nav style="margin-left: auto;" aria-label="Page navigation example">
-                            <ul class="pagination">
-                                @if($page - 1 >= 1)
-                                    <li class="page-item"><a class="page-link"
-                                                             href="/home/{{$id}}/{{$page-1}}{{$getParams}}"><span>prev</span></a>
-                                    </li>
-                                @endif
-                                <li class="page-item page-link active"><span>{{$page}}</span></li>
-                                @if($page + 1 <= ceil($count / 5))
-                                    <li class="page-item"><a class="page-link"
-                                                             href="/home/{{$id}}/{{$page+1}}{{$getParams}}"><span>next</span></a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </nav>
+                    <div class="d-flex flex-column">
+                        <div style="margin-left: auto;" class="mb-4 pagination">
+                            total - {{$count}}
+                        </div>
+                        <div style="margin-left: auto;" class="pagination">
+                            <nav  aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    @if($page - 1 >= 1)
+                                        <li class="page-item"><a class="page-link"
+                                                                 href="/home/{{$id}}/{{$page-1}}{{$getParams}}"><span>prev</span></a>
+                                        </li>
+                                    @endif
+                                    <li class="page-item page-link active"><span>{{$page}}</span></li>
+                                    @if($page + 1 <= ceil($count / 5))
+                                        <li class="page-item"><a class="page-link"
+                                                                 href="/home/{{$id}}/{{$page+1}}{{$getParams}}"><span>next</span></a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 @endif
             </div>
