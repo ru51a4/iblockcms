@@ -178,7 +178,7 @@ class Iblocks
                     $t["prop"][$prop["prop"]["name"]] = $prop[$type];
                 }
             }
-            unset($el["propvalue"]);
+            unset($t["propvalue"]);
             $deep = function (&$c) use (&$kek, &$deep, &$el, $t) {
                 foreach ($c as $key => $value) {
                     if ($key == $el->iblock_id) {
@@ -219,7 +219,7 @@ class Iblocks
                     $t["prop"][$prop["prop"]["name"]] = $prop[$type];
                 }
             }
-            unset($el["propvalue"]);
+            unset($t["propvalue"]);
             $res[] = $t;
         }
         return $res;
