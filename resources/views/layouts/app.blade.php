@@ -146,7 +146,7 @@
             .zhs {
                 position: absolute;
                 z-index: 100;
-                background: white;
+                background: transparent;
                 display: none;
             }
 
