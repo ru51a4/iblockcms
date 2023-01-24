@@ -1,6 +1,6 @@
 my iblock implementation (like bitrix cms)    
 iblock:  
-&nbsp;&nbsp;&nbsp;id name parent_id left right depth 
+&nbsp;&nbsp;&nbsp;id name parent_id left right depth   
 iblock_elements:  
 &nbsp;&nbsp;&nbsp;id name iblock_id  
 iblock_properties:  
