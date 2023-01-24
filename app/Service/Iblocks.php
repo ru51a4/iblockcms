@@ -13,9 +13,10 @@ class Iblocks
 {
     public static function getBreadcrumbIblock($iblock)
     {
+        $sectionTree = iblock::where("left","<=",$iblock->left)->where("right",">=",$iblock->right)->get();
         $res = [["name" => $iblock->name, "id" => $iblock->id]];
-        while ($iblock->parrent_id != 0) {
-            $iblock = iblock::find($iblock->parrent_id);
+        while ($iblock->parent_id != 0) {
+            $iblock = $sectionTree->where("id", "=", $iblock->parent_id)->first();
             $res[] = ["name" => $iblock->name, "id" => $iblock->id];
         }
         return array_reverse($res);
@@ -23,6 +24,7 @@ class Iblocks
 
     public static function getPropsParrents($iblock, $is_admin = false)
     {
+        $sectionTree = iblock::where("left","<=",$iblock->left)->where("right",">=",$iblock->right)->get();
         $res = [];
         foreach ($iblock->properties as $prop) {
             if ($iblock->id == 1 && !$is_admin) {
@@ -30,8 +32,8 @@ class Iblocks
             }
             $res[] = $prop;
         }
-        while ($iblock->parrent_id != 0) {
-            $iblock = iblock::find($iblock->parrent_id);
+        while ($iblock->parent_id != 0) {
+            $iblock = $sectionTree->where("id", "=", $iblock->parent_id)->first();
             foreach ($iblock->properties as $prop) {
                 if ($iblock->id == 1 && !$is_admin) {
                     continue;
@@ -73,13 +75,13 @@ class Iblocks
                 }
             }
             foreach ($childs as $child) {
-                $c = iblock::where("parrent_id", "=", $child->id)->get();
+                $c = iblock::where("parent_id", "=", $child->id)->get();
                 if (count($c)) {
                     $deep($c);
                 }
             }
         };
-        $c = iblock::where("parrent_id", "=", $iblock)->get();
+        $c = iblock::where("parent_id", "=", $iblock)->get();
         if (count($c)) {
             $deep($c);
         }
@@ -99,22 +101,23 @@ class Iblocks
         $stack = [$iblockID];
         $res = [];
         $ids = [];
-        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, $where, $itemPerPage, $page, $params, &$ids) {
+        $iblock = iblock::find($iblockID);
+        //nested set
+        $sectionTree = iblock::where("left",">=",$iblock->left)->where("right","<=",$iblock->right)->get();
+        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, &$ids, &$sectionTree) {
             $c[$iblock->id]["key"] = $iblock->name;
             $c[$iblock->id]["path"] = $stack;
             if (in_array($elId, $stack)) {
                 $ids[] = $iblock->id;
             }
             //
-            $childs = iblock::where("parrent_id", "=", $iblock->id)->get();
+            $childs = $sectionTree->where("parent_id", "=", $iblock->id)->all();
             foreach ($childs as $child) {
                 $stack[] = $child->id;
                 $getChilds($child, $c[$iblock->id]);
                 array_pop($stack);
             }
         };
-
-        $iblock = iblock::find($iblockID);
         $getChilds($iblock, $res);
 
         $els = iblock_element::with("propvalue.prop")->whereIn("iblock_id", $ids);
@@ -305,7 +308,7 @@ class Iblocks
         $el = new iblock();
         $el->name = $obj["name"];
         if ($parentId) {
-            $el->parrent_id = $parentId;
+            $el->parent_id = $parentId;
         }
         $el->save();
         return $el->id;

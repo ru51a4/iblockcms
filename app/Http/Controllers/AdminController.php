@@ -24,7 +24,7 @@ class AdminController extends Controller
 
     public function index()
     {
-        $iblocks = iblock::where("parrent_id", "=", 0)->get();
+        $iblocks = iblock::where("parent_id", "=", 0)->get();
         return view('admin/dashboard', compact("iblocks"));
     }
 
@@ -32,7 +32,7 @@ class AdminController extends Controller
     {
         $iblock = new iblock();
         $iblock->name = $request->name;
-        $iblock->parrent_id = ($request->parrent_id) ? $request->parrent_id : 0;
+        $iblock->parent_id = ($request->parent_id) ? $request->parent_id : 0;
         $iblock->save();
         return redirect("/admin");
     }
@@ -46,7 +46,7 @@ class AdminController extends Controller
     public function elementlist(iblock $iblock)
     {
         $breadcrumb = Iblocks::getBreadcrumbIblock($iblock);
-        $iblocks = iblock::where("parrent_id", "=", $iblock->id)->get();
+        $iblocks = iblock::where("parent_id", "=", $iblock->id)->get();
         $elements = iblock_element::where("iblock_id", "=", $iblock->id)->paginate(20);
         return view('admin/elementlist', compact("iblock", "elements", "iblocks", "breadcrumb"));
     }
