@@ -24,7 +24,7 @@ class Iblocks
 
     public static function getPropsParrents($iblock, $is_admin = false)
     {
-        $sectionTree = iblock::where("left","<=",$iblock->left)->where("right",">=",$iblock->right)->get();
+        $sectionTree = iblock::with("properties")->where("left","<=",$iblock->left)->where("right",">=",$iblock->right)->get();
         $res = [];
         foreach ($iblock->properties as $prop) {
             if ($iblock->id == 1 && !$is_admin) {
