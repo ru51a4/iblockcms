@@ -25,9 +25,9 @@ class iblock_element extends Model
         return $this->belongsToMany(iblock_property::class);
     }
 
-    public function getPropWithParrents($iblock)
+    public function getPropWithParents($iblock)
     {
-        return \App\Service\Iblocks::getPropsParrents($iblock);
+        return \App\Service\Iblocks::getPropsParents($iblock);
     }
 
 

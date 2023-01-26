@@ -13,7 +13,7 @@ class Iblocks
 {
     public static function getBreadcrumbIblock($iblock)
     {
-        $sectionTree = iblock::where("left","<=",$iblock->left)->where("right",">=",$iblock->right)->get();
+        $sectionTree = $iblock->getParents();
         $res = [["name" => $iblock->name, "id" => $iblock->id]];
         while ($iblock->parent_id != 0) {
             $iblock = $sectionTree->where("id", "=", $iblock->parent_id)->first();
@@ -24,7 +24,7 @@ class Iblocks
 
     public static function getPropsParrents($iblock, $is_admin = false)
     {
-        $sectionTree = iblock::with("properties")->where("left","<=",$iblock->left)->where("right",">=",$iblock->right)->get();
+        $sectionTree = $iblock->getParents();
         $res = [];
         foreach ($iblock->properties as $prop) {
             if ($iblock->id == 1 && !$is_admin) {
@@ -103,7 +103,7 @@ class Iblocks
         $ids = [];
         $iblock = iblock::find($iblockID);
         //nested set
-        $sectionTree = iblock::where("left",">=",$iblock->left)->where("right","<=",$iblock->right)->get();
+        $sectionTree = $iblock->getChilds();
         $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, &$ids, &$sectionTree) {
             $c[$iblock->id]["key"] = $iblock->name;
             $c[$iblock->id]["path"] = $stack;

@@ -9,6 +9,8 @@ class iblock extends Model
 {
     use HasFactory;
 
+    private static $usedNestedSet = true;
+
     public function elements()
     {
         return $this->hasMany(iblock_element::class);
@@ -19,9 +21,43 @@ class iblock extends Model
         return $this->hasMany("App\Models\iblock_property");
     }
 
-    public function getPropWithParrents($is_admin = false)
+    public function getPropWithParents($is_admin = false)
     {
-        return \App\Service\Iblocks::getPropsParrents($this, $is_admin);
+        return \App\Service\Iblocks::getPropsParents($this, $is_admin);
+    }
+
+    public function getParents()
+    {
+        $iblock = $this;
+        if (self::$usedNestedSet) {
+            $sectionTree = iblock::with("properties")->where("left", "<=", $iblock->left)->where("right", ">=", $iblock->right)->get();
+        } else {
+            $sectionTree = [$iblock];
+            while ($iblock->parent_id != 0) {
+                $iblock = iblock::with("properties")->where("id", "=", $iblock->parent_id)->first();
+                $sectionTree[] = $iblock;
+            }
+        }
+        return collect($sectionTree);
+    }
+
+    public function getChilds()
+    {
+        $iblock = $this;
+        if (self::$usedNestedSet) {
+            $sectionTree = iblock::where("left", ">=", $iblock->left)->where("right", "<=", $iblock->right)->get();
+        } else {
+            $sectionTree = [];
+            $getChilds = function ($iblock) use (&$sectionTree, &$getChilds) {
+                $sectionTree[] = $iblock;
+                $childs = iblock::where("parent_id", "=", $iblock->id)->get();
+                foreach ($childs as $child) {
+                    $getChilds($child);
+                }
+            };
+            $getChilds($iblock);
+        }
+        return collect($sectionTree);
     }
 
 
