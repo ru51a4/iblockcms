@@ -104,7 +104,7 @@ class HomeController extends Controller
         $deep = function (&$c) use (&$deep) {
             $q["title"] = $c["key"];
             $q["url"] = "/home/" . end($c["path"]);
-            if(!isset($q["childrens"])){
+            if (!isset($q["childrens"])) {
                 $q["childrens"] = [];
             }
             foreach ($c as $key => $value) {
@@ -133,7 +133,7 @@ class HomeController extends Controller
         $deep = function (&$c) use (&$deep) {
             $q["title"] = $c["key"];
             $q["url"] = "/home/" . end($c["path"]);
-            if(!isset($q["childrens"])){
+            if (!isset($q["childrens"])) {
                 $q["childrens"] = [];
             }
             foreach ($c as $key => $value) {
@@ -148,5 +148,10 @@ class HomeController extends Controller
         $zhsmenu = json_encode($zhsmenu);
 
         return view('detail', compact("id", "tree", "el", "zhsmenu"));
+    }
+
+    public function catalog($slug)
+    {
+        return explode("/", $slug);
     }
 }

@@ -33,6 +33,8 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
 Auth::routes();
 
+//slug
+Route::get('catalog/{slug}', [App\Http\Controllers\HomeController::class, 'catalog'])->where(['slug' => '.*']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
 Route::get('/home/{id}', [App\Http\Controllers\HomeController::class, 'index']);
