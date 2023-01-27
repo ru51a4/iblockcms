@@ -48,16 +48,14 @@ class IndexController extends Controller
      */
     public function index($id = 1, $page = 1)
     {
-        $tree = Iblocks::GetList($id, $id, 5, $page, null, []);
+        $tree = (Iblocks::SectionGetList($id));
+        $els = Iblocks::ElementsGetListByIblockId($id, 5, $page, false, []);
+        $count = $els["count"];
+        $cEls = $els["res"];
+
         $props = Iblocks::getAllProps($id, true);
-        $cTree = $tree["res"];
-        $cEls = [];
+        $cTree = $tree;
         $deep = function (&$c, $id) use (&$cEls, &$deep) {
-            if (isset($c["elements"])) {
-                foreach ($c["elements"] as $cv) {
-                    $cEls[] = $cv;
-                }
-            }
             foreach ($c as $key => $value) {
                 if (is_numeric($key)) {
                     $deep($c[$key], $key);
@@ -67,7 +65,7 @@ class IndexController extends Controller
         };
         $deep($cTree[$id], $id);
         $kek[$id] = $cTree[$id];
-        return ["count" => $tree["count"], "tree" => $kek, "props" => $props, "els" => $cEls];
+        return ["count" => $count, "tree" => $kek, "props" => $props, "els" => $cEls];
     }
 
     /**

@@ -126,8 +126,8 @@
             </style>
             <div class="el">
                 <ul>
-                    @if (!empty($tree[$id]["elements"]))
-                        @foreach($tree[$id]["elements"] as $key => $el)
+                    @if (!empty($els))
+                        @foreach($els as $key => $el)
                             @if(isset($el["name"]) && empty($el["prop"]["is_op"]))
                                 <li class="card mb-4">
                                     <div class="p-2">

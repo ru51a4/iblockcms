@@ -96,30 +96,12 @@ class Iblocks
     $params["range"]["id"]["from"]
     $params["param"][$c[1]] = $param;
     */
-    public static function GetList($iblockID, $elId = false, $itemPerPage = 5, $page = false, $where = null, $params = null)
+    public static function ElementsGetListByIblockId($iblockID, $itemPerPage = 5, $page = false, $where = null, $params = null)
     {
-        $stack = [$iblockID];
         $res = [];
-        $ids = [];
-        $iblock = iblock::find($iblockID);
-        //nested set
-        $sectionTree = $iblock->getChilds();
-        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, $elId, &$ids, &$sectionTree) {
-            $c[$iblock->id]["key"] = $iblock->name;
-            $c[$iblock->id]["path"] = $stack;
-            if (in_array($elId, $stack)) {
-                $ids[] = $iblock->id;
-            }
-            //
-            $childs = $sectionTree->where("parent_id", "=", $iblock->id)->all();
-            foreach ($childs as $child) {
-                $stack[] = $child->id;
-                $getChilds($child, $c[$iblock->id]);
-                array_pop($stack);
-            }
-        };
-        $getChilds($iblock, $res);
-
+        $ids = iblock::find($iblockID)->getChilds()->map(function ($iblock) {
+            return $iblock->id;
+        });
         $els = iblock_element::with("propvalue.prop")->whereIn("iblock_id", $ids);
         if ($page) {
             $els = $els->where("name", "!=", "op");
@@ -182,23 +164,32 @@ class Iblocks
                 }
             }
             unset($t["propvalue"]);
-            $deep = function (&$c) use (&$kek, &$deep, &$el, $t) {
-                foreach ($c as $key => $value) {
-                    if ($key == $el->iblock_id) {
-                        $c[$key]["elements"][] = $t;
-                        return;
-                    }
-                    if (is_numeric($key)) {
-                        $deep($c[$key]);
-                    }
-                }
-            };
-            $deep($res);
+            $res[] = $t;
         }
+        return ["count" => $count, "res" => $res];
+    }
 
-        if ($page) {
-            return ["count" => $count, "res" => $res];
-        }
+    public static function SectionGetList($iblockID)
+    {
+        $stack = [$iblockID];
+        $res = [];
+        $ids = [];
+        $iblock = iblock::find($iblockID);
+        //nested set
+        $sectionTree = $iblock->getChilds();
+        $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, &$sectionTree) {
+            $c[$iblock->id]["key"] = $iblock->name;
+            $c[$iblock->id]["path"] = $stack;
+            //
+            $childs = $sectionTree->where("parent_id", "=", $iblock->id)->all();
+            foreach ($childs as $child) {
+                $stack[] = $child->id;
+                $getChilds($child, $c[$iblock->id]);
+                array_pop($stack);
+            }
+        };
+        $getChilds($iblock, $res);
+
         return $res;
     }
 

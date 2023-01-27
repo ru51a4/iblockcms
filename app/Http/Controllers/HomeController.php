@@ -46,32 +46,12 @@ class HomeController extends Controller
                 }
             }
         }
-
-        $c = Iblocks::GetList(1, $id, 5, $page, false, $resParams);
-        $els = $c["res"];
-        $count = $c["count"];
-        $res = Iblocks::treeToArray($els);
-        $tree = $res;
+        $tree = Iblocks::treeToArray(Iblocks::SectionGetList(1));
+        $els = Iblocks::ElementsGetListByIblockId($id, 5, $page, false, $resParams);
+        $count = $els["count"];
+        $els = $els["res"];
         $sectionsDetail = [];
         foreach ($tree as $cId => $c) {
-            $cEls = [];
-            $deep = function ($c) use (&$cEls, &$deep) {
-                if (isset($c["elements"])) {
-                    foreach ($c["elements"] as $cv) {
-                        $cEls[] = $cv;
-                    }
-                }
-                foreach ($c as $key => $value) {
-                    if (is_numeric($key)) {
-                        $deep($c[$key]);
-                    }
-                }
-            };
-            $deep($tree[$cId]);
-            $tree[$cId]["elements"] = [];
-            foreach ($cEls as $cv) {
-                $tree[$cId]["elements"][] = $cv;
-            }
             $sectionsDetail[$cId] = functions::getOpItem($cId);
         }
         $countSection = array_filter($tree[$id], function ($item) {
@@ -118,14 +98,14 @@ class HomeController extends Controller
         $zhsmenu["childrens"][] = $deep($tree[1]);
         $zhsmenu = json_encode($zhsmenu);
         //
-        return view('home', compact("tree", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "count", "getParams", "zhsmenu"));
+        return view('home', compact("tree", "count", "els", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "getParams", "zhsmenu"));
     }
 
     public function detail($id)
     {
         $el = (Iblocks::ElementsGetList([$id])[0]);
         $id = $el["iblock_id"];
-        $tree = Iblocks::GetList(1, null, 5, null, null, null);
+        $tree = Iblocks::SectionGetList(1);
         $tree = Iblocks::treeToArray($tree);
 
         //zhsmenu
