@@ -47,7 +47,7 @@ class Iblocks
     public static function getAllProps($iblock, $values = false)
     {
         $res = [];
-        foreach (self::getPropsParrents(iblock::find($iblock)) as $c) {
+        foreach (self::getPropsParents(iblock::find($iblock)) as $c) {
             $res[] = $c;
         }
         if ($values) {
