@@ -7,7 +7,7 @@
                 @if(array_values($tree[$id]["path"])[0] != $item)
                     /
                 @endif
-                <a href="/home/{{$item}}/">{{$tree[$item]["key"]}}</a>
+                <a href="/catalog/{{implode("/", $tree[$item]["slug"])}}/">{{$tree[$item]["key"]}}</a>
             @endforeach
         </div>
     </div>
@@ -27,12 +27,12 @@
                                 @for($i =1; $i<= count($el["path"]); $i++)
                                     -
                                 @endfor
-                                <a href="/home/{{$key}}"> {{$el["key"]}}</a></li>
+                                <a href="/catalog/{{implode("/", $el["slug"])}}"> {{$el["key"]}}</a></li>
                         @endif
                     @endforeach
                 </ul>
             </div>
-            <form method="get" action="/home/{{$id}}">
+            <form method="get" action="/catalog/{{$cSlug}}">
                 <div class="card" style="overflow: auto;max-height: 70vh;">
                     <ul>
                         @foreach($allProps as $prop)
@@ -105,7 +105,7 @@
                                 @if(isset($sectionsDetail[$key]["prop"]["img"]))
                                     <img src="{{$sectionsDetail[$key]["prop"]["img"]}}" class="card-img-top" alt="...">
                                 @endif
-                                <a href="/home/{{$key}}">
+                                <a href="/catalog/{{implode("/",$el["slug"])}}">
                                     <span>{{$el["key"]}}</span>
                                 </a>
                             </div>
@@ -131,7 +131,7 @@
                             @if(isset($el["name"]) && empty($el["prop"]["is_op"]))
                                 <li class="card mb-4">
                                     <div class="p-2">
-                                        <a href="/detail/{{$el["id"]}}">{{$el["name"]}}</a>
+                                        <a href="/detail/{{$cSlug}}/{{$el["slug"]}}">{{$el["name"]}}</a>
                                         <ul>
                                             @foreach($el["prop"] as $key => $prop)
                                                 @if(is_array($prop))
@@ -160,17 +160,17 @@
                             total - {{$count}}
                         </div>
                         <div style="margin-left: auto;" class="pagination">
-                            <nav  aria-label="Page navigation example">
+                            <nav aria-label="Page navigation example">
                                 <ul class="pagination">
                                     @if($page - 1 >= 1)
                                         <li class="page-item"><a class="page-link"
-                                                                 href="/home/{{$id}}/{{$page-1}}{{$getParams}}"><span>prev</span></a>
+                                                                 href="/catalog/{{$cSlug}}/{{$page-1}}{{$getParams}}"><span>prev</span></a>
                                         </li>
                                     @endif
                                     <li class="page-item page-link active"><span>{{$page}}</span></li>
                                     @if($page + 1 <= ceil($count / 5))
                                         <li class="page-item"><a class="page-link"
-                                                                 href="/home/{{$id}}/{{$page+1}}{{$getParams}}"><span>next</span></a>
+                                                                 href="/catalog/{{$cSlug}}/{{$page+1}}{{$getParams}}"><span>next</span></a>
                                         </li>
                                     @endif
                                 </ul>

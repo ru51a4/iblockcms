@@ -31,9 +31,7 @@ class AdminController extends Controller
     public function addiblock(Request $request)
     {
         $iblock = new iblock();
-        $iblock->name = $request->name;
-        $iblock->parent_id = ($request->parent_id) ? $request->parent_id : 0;
-        $iblock->save();
+        Iblocks::addSection(["name" => $request->name], $request->parent_id);
         return redirect("/admin");
     }
 

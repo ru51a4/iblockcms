@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect("/home");
+    return redirect("/catalog");
 
 });
 
@@ -34,15 +34,11 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 Auth::routes();
 
 //slug
+Route::get('catalog', [App\Http\Controllers\HomeController::class, 'catalog']);
 Route::get('catalog/{slug}', [App\Http\Controllers\HomeController::class, 'catalog'])->where(['slug' => '.*']);
+Route::post('catalog/{slug}', [App\Http\Controllers\HomeController::class, 'catalog'])->where(['slug' => '.*']);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
-Route::get('/home/{id}', [App\Http\Controllers\HomeController::class, 'index']);
-Route::get('/home/{id}/{page}', [App\Http\Controllers\HomeController::class, 'index']);
-
-Route::post('/home', [App\Http\Controllers\HomeController::class, 'index']);
-Route::post('/home/{id}', [App\Http\Controllers\HomeController::class, 'index']);
-Route::get('/detail/{id}', [App\Http\Controllers\HomeController::class, 'detail']);
+Route::get('/detail/{slug}', [App\Http\Controllers\HomeController::class, 'detail'])->where(['slug' => '.*']);
 
 Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index']);
 Route::get('/admin/addiblock', [App\Http\Controllers\AdminController::class, 'addiblockform']);

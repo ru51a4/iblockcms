@@ -16,6 +16,7 @@ class CreateIblockElementsTable extends Migration
         Schema::create('iblock_elements', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('slug');
             $table->unsignedBigInteger('iblock_id');
             $table->foreign('iblock_id')
                 ->references('id')->on('iblocks')

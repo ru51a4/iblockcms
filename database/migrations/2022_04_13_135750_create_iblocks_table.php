@@ -16,6 +16,7 @@ class CreateIblocksTable extends Migration
         Schema::create('iblocks', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug');
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->integer('left')->nullable();
             $table->integer('right')->nullable();

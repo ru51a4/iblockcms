@@ -96,7 +96,7 @@ class Iblocks
     $params["range"]["id"]["from"]
     $params["param"][$c[1]] = $param;
     */
-    public static function ElementsGetListByIblockId($iblockID, $itemPerPage = 5, $page = false, $where = null, $params = null)
+    public static function ElementsGetListByIblockId($iblockID = 1, $itemPerPage = 5, $page = false, $where = null, $params = null)
     {
         $res = [];
         $ids = iblock::find($iblockID)->getChilds()->map(function ($iblock) {
@@ -171,19 +171,23 @@ class Iblocks
 
     public static function SectionGetList($iblockID)
     {
-        $stack = [$iblockID];
         $res = [];
-        $ids = [];
         $iblock = iblock::find($iblockID);
+        $stack = [$iblock];
         //nested set
         $sectionTree = $iblock->getChilds();
         $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, &$sectionTree) {
             $c[$iblock->id]["key"] = $iblock->name;
-            $c[$iblock->id]["path"] = $stack;
+            $c[$iblock->id]["path"] = array_map(function ($item) {
+                return $item->id;
+            }, $stack);
+            $c[$iblock->id]["slug"] = array_map(function ($item) {
+                return $item->slug;
+            }, $stack);
             //
             $childs = $sectionTree->where("parent_id", "=", $iblock->id)->all();
             foreach ($childs as $child) {
-                $stack[] = $child->id;
+                $stack[] = $child;
                 $getChilds($child, $c[$iblock->id]);
                 array_pop($stack);
             }
@@ -230,6 +234,7 @@ class Iblocks
         $el = new iblock_element();
         //}
         $el->name = $obj["name"];
+        $el->slug = \Str::slug($obj["name"]);
         $el->iblock_id = $iblockId;
         $el->save();
         foreach ($obj["prop"] as $id => $prop) {
@@ -298,9 +303,8 @@ class Iblocks
     {
         $el = new iblock();
         $el->name = $obj["name"];
-        if ($parentId) {
-            $el->parent_id = $parentId;
-        }
+        $el->slug = \Str::slug($obj["name"]);
+        $el->parent_id = (is_numeric($parentId)) ? $parentId : 0;
         $el->save();
         return $el->id;
     }

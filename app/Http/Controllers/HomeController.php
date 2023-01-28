@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\iblock;
+use App\Models\iblock_element;
 use App\Models\iblock_prop_value;
 use App\Models\iblock_property;
 use App\Service\functions;
@@ -27,8 +29,21 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index(Request $request, $id = 1, $page = 1)
+    public function catalog(Request $request, $slug = "")
     {
+        $cSlug = '';
+        if ($slug) {
+            $slug = explode("/", $slug);
+            $page = 1;
+            if (is_numeric(end($slug))) {
+                $page = array_pop($slug);
+            }
+            $cSlug = implode("/", $slug);
+            $id = iblock::where("slug", "=", array_pop($slug))->first()->id;
+        } else {
+            $page = 1;
+            $id = 1;
+        }
         $resParams = [];
         if ($request) {
             $params = ($request->toArray());
@@ -83,7 +98,7 @@ class HomeController extends Controller
         $zhsmenu = ["childrens" => []];
         $deep = function (&$c) use (&$deep) {
             $q["title"] = $c["key"];
-            $q["url"] = "/home/" . end($c["path"]);
+            $q["url"] = "/catalog/" . implode("/", $c["slug"]);
             if (!isset($q["childrens"])) {
                 $q["childrens"] = [];
             }
@@ -98,11 +113,13 @@ class HomeController extends Controller
         $zhsmenu["childrens"][] = $deep($tree[1]);
         $zhsmenu = json_encode($zhsmenu);
         //
-        return view('home', compact("tree", "count", "els", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "getParams", "zhsmenu"));
+        return view('home', compact("tree", "cSlug", "count", "els", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "getParams", "zhsmenu"));
     }
 
-    public function detail($id)
+    public function detail($slug)
     {
+        $slug = explode("/", $slug);
+        $id = iblock_element::where("slug", "=", array_pop($slug))->first()->id;
         $el = (Iblocks::ElementsGetList([$id])[0]);
         $id = $el["iblock_id"];
         $tree = Iblocks::SectionGetList(1);
@@ -112,7 +129,7 @@ class HomeController extends Controller
         $zhsmenu = ["childrens" => []];
         $deep = function (&$c) use (&$deep) {
             $q["title"] = $c["key"];
-            $q["url"] = "/home/" . end($c["path"]);
+            $q["url"] = "/catalog/" . implode("/", $c["slug"]);
             if (!isset($q["childrens"])) {
                 $q["childrens"] = [];
             }
@@ -126,12 +143,8 @@ class HomeController extends Controller
 
         $zhsmenu["childrens"][] = $deep($tree[1]);
         $zhsmenu = json_encode($zhsmenu);
-
         return view('detail', compact("id", "tree", "el", "zhsmenu"));
     }
 
-    public function catalog($slug)
-    {
-        return explode("/", $slug);
-    }
+
 }

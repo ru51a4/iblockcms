@@ -9,7 +9,7 @@ class iblock extends Model
 {
     use HasFactory;
 
-    private static $usedNestedSet = true;
+    private static $usedNestedSet = false;
 
     public function elements()
     {

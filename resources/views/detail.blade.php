@@ -6,7 +6,7 @@
                 @if(array_values($tree[$id]["path"])[0] != $item)
                     /
                 @endif
-                <a href="/home/{{$item}}/">{{$tree[$item]["key"]}}</a>
+                <a href="/catalog/{{implode("/", $tree[$item]["slug"])}}/">{{$tree[$item]["key"]}}</a>
             @endforeach
         </div>
     </div>
@@ -19,14 +19,14 @@
                             <li>  @for($i =1; $i<= count($cel["path"]); $i++)
                                     -
                                 @endfor
-                                <b> <a href="/home/{{$key}}"> {{$cel["key"]}}</a></b>
+                                <b>{{$cel["key"]}}</b>
                             </li>
                         @else
                             <li>
                                 @for($i =1; $i<= count($cel["path"]); $i++)
                                     -
                                 @endfor
-                                <a href="/home/{{$key}}"> {{$cel["key"]}}</a></li>
+                                <a href="/catalog/{{implode("/", $cel["slug"])}}"> {{$cel["key"]}}</a></li>
                         @endif
                     @endforeach
                 </ul>
