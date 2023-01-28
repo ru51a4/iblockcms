@@ -22,7 +22,7 @@ class Iblocks
         return array_reverse($res);
     }
 
-    public static function getPropsParrents($iblock, $is_admin = false)
+    public static function getPropsParents($iblock, $is_admin = false)
     {
         $sectionTree = $iblock->getParents();
         $res = [];
