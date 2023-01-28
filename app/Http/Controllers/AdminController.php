@@ -106,7 +106,8 @@ class AdminController extends Controller
 
     public function editelementform(iblock_element $iblock_element)
     {
-        $props = $iblock_element->iblock->getPropWithParrents(true);
+
+        $props = $iblock_element->iblock->getPropWithParents(true);
 
         $resProp = [];
 
