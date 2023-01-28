@@ -32,7 +32,7 @@
                     @endforeach
                 </ul>
             </div>
-            <form method="get" action="/catalog/{{$cSlug}}">
+            <form method="get" action="/catalog/{{implode("/", $tree[$id]["slug"])}}">
                 <div class="card" style="overflow: auto;max-height: 70vh;">
                     <ul>
                         @foreach($allProps as $prop)
@@ -131,7 +131,7 @@
                             @if(isset($el["name"]) && empty($el["prop"]["is_op"]))
                                 <li class="card mb-4">
                                     <div class="p-2">
-                                        <a href="/catalog/{{$cSlug}}/{{$el["slug"]}}">{{$el["name"]}}</a>
+                                        <a href="/catalog/{{implode("/", $tree[$el["iblock_id"]]["slug"])}}/{{$el["slug"]}}">{{$el["name"]}}</a>
                                         <ul>
                                             @foreach($el["prop"] as $key => $prop)
                                                 @if(is_array($prop))
@@ -164,13 +164,14 @@
                                 <ul class="pagination">
                                     @if($page - 1 >= 1)
                                         <li class="page-item"><a class="page-link"
-                                                                 href="/catalog/{{$cSlug}}/{{$page-1}}{{$getParams}}"><span>prev</span></a>
+                                                                 href="/catalog/{{implode("/", $tree[$id]["slug"])}}/{{$page-1}}{{$getParams}}"><span>prev</span></a>
                                         </li>
+
                                     @endif
                                     <li class="page-item page-link active"><span>{{$page}}</span></li>
                                     @if($page + 1 <= ceil($count / 5))
                                         <li class="page-item"><a class="page-link"
-                                                                 href="/catalog/{{$cSlug}}/{{$page+1}}{{$getParams}}"><span>next</span></a>
+                                                                 href="/catalog/{{implode("/", $tree[$id]["slug"])}}/{{$page+1}}{{$getParams}}"><span>next</span></a>
                                         </li>
                                     @endif
                                 </ul>

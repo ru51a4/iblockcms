@@ -40,11 +40,15 @@ class HomeController extends Controller
             }
             $cSlug = implode("/", $slug);
             $id = array_pop($slug);
-            $detailId = iblock_element::where("slug", "=", $id)->first();
-            if(!empty($detailId)){
-                return $this->detail($detailId->id);
+            if (!empty($id)) {
+                $detailId = iblock_element::where("slug", "=", $id)->first();
+                if (!empty($detailId)) {
+                    return $this->detail($detailId->id);
+                }
+                $id = iblock::where("slug", "=", $id)->first()->id;
+            } else {
+                $id = 1;
             }
-            $id = iblock::where("slug", "=", $id)->first()->id;
         } else {
             $page = 1;
             $id = 1;
