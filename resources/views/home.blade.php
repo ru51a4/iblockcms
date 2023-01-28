@@ -131,7 +131,7 @@
                             @if(isset($el["name"]) && empty($el["prop"]["is_op"]))
                                 <li class="card mb-4">
                                     <div class="p-2">
-                                        <a href="/detail/{{$cSlug}}/{{$el["slug"]}}">{{$el["name"]}}</a>
+                                        <a href="/catalog/{{$cSlug}}/{{$el["slug"]}}">{{$el["name"]}}</a>
                                         <ul>
                                             @foreach($el["prop"] as $key => $prop)
                                                 @if(is_array($prop))

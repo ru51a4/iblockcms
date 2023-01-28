@@ -39,7 +39,12 @@ class HomeController extends Controller
                 $page = array_pop($slug);
             }
             $cSlug = implode("/", $slug);
-            $id = iblock::where("slug", "=", array_pop($slug))->first()->id;
+            $id = array_pop($slug);
+            $detailId = iblock_element::where("slug", "=", $id)->first();
+            if(!empty($detailId)){
+                return $this->detail($detailId->id);
+            }
+            $id = iblock::where("slug", "=", $id)->first()->id;
         } else {
             $page = 1;
             $id = 1;
@@ -116,10 +121,8 @@ class HomeController extends Controller
         return view('home', compact("tree", "cSlug", "count", "els", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "getParams", "zhsmenu"));
     }
 
-    public function detail($slug)
+    public function detail($id)
     {
-        $slug = explode("/", $slug);
-        $id = iblock_element::where("slug", "=", array_pop($slug))->first()->id;
         $el = (Iblocks::ElementsGetList([$id])[0]);
         $id = $el["iblock_id"];
         $tree = Iblocks::SectionGetList(1);
