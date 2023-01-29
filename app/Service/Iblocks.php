@@ -183,7 +183,7 @@ class Iblocks
             }, $stack);
             $c[$iblock->id]["slug"] = array_map(function ($item) {
                 return $item->slug;
-            }, $stack);
+            }, array_slice($stack, 1));
             //
             $childs = $sectionTree->where("parent_id", "=", $iblock->id)->all();
             foreach ($childs as $child) {

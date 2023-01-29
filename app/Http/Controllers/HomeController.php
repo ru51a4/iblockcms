@@ -120,6 +120,7 @@ class HomeController extends Controller
         };
 
         $zhsmenu["childrens"][] = $deep($tree[1]);
+        $zhsmenu["childrens"] = $zhsmenu["childrens"][0]["childrens"];
         $zhsmenu = json_encode($zhsmenu);
         //
         return view('home', compact("tree", "cSlug", "count", "els", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "getParams", "zhsmenu"));
@@ -149,6 +150,7 @@ class HomeController extends Controller
         };
 
         $zhsmenu["childrens"][] = $deep($tree[1]);
+        $zhsmenu["childrens"] = $zhsmenu["childrens"][0]["childrens"];
         $zhsmenu = json_encode($zhsmenu);
         return view('detail', compact("id", "tree", "el", "zhsmenu"));
     }
