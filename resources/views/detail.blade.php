@@ -6,7 +6,11 @@
                 @if(array_values($tree[$id]["path"])[0] != $item)
                     /
                 @endif
-                <a href="/catalog/{{implode("/", $tree[$item]["slug"])}}/">{{$tree[$item]["key"]}}</a>
+                @if(count($tree[$item]["slug"]) > 0)
+                    <a href="/catalog/{{implode("/", $tree[$item]["slug"])}}/">{{$tree[$item]["key"]}}</a>
+                @else
+                    <a href="/catalog/">{{$tree[$item]["key"]}}</a>
+                @endif
             @endforeach
         </div>
     </div>
