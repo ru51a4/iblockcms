@@ -31,14 +31,12 @@ class HomeController extends Controller
      */
     public function catalog(Request $request, $slug = "")
     {
-        $cSlug = '';
         if ($slug) {
             $slug = explode("/", $slug);
             $page = 1;
             if (is_numeric(end($slug))) {
                 $page = array_pop($slug);
             }
-            $cSlug = implode("/", $slug);
             $id = array_pop($slug);
             if (!empty($id)) {
                 $detailId = iblock_element::where("slug", "=", $id)->first();
