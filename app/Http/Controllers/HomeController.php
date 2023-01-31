@@ -121,7 +121,7 @@ class HomeController extends Controller
         $zhsmenu["childrens"] = $zhsmenu["childrens"][0]["childrens"];
         $zhsmenu = json_encode($zhsmenu);
         //
-        return view('home', compact("tree", "cSlug", "count", "els", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "getParams", "zhsmenu"));
+        return view('home', compact("tree", "count", "els", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "getParams", "zhsmenu"));
     }
 
     public function detail($id)
