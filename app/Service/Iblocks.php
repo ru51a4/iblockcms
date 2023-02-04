@@ -280,6 +280,7 @@ class Iblocks
                     $p->prop_id = $prop->id;
                     $p->el_id = $el->id;
                     $p->value_id = ++$count;
+                    $p->slug = \Str::slug($prop->name."-".$item);
                     if ($prop->is_number) {
                         $p->value_number = (integer)$item;
                     } else {
@@ -289,6 +290,7 @@ class Iblocks
                 }
             } else {
                 //
+                $p->slug = \Str::slug($prop->name."-".$obj["prop"][$id]);
                 if ($prop->is_number) {
                     $p->value_number = (integer)$obj["prop"][$id];
                 } else {
@@ -328,6 +330,7 @@ class Iblocks
                         $c = new iblock_prop_value();
                         $c->el_id = $elId;
                         $c->prop_id = $p->id;
+                        $c->slug = \Str::slug($p->name."-".$item);
                         $c->value_id = ++$count;
                         if ($p->is_number) {
                             $c->value_number = (integer)$item;
@@ -341,6 +344,7 @@ class Iblocks
                     $c = new iblock_prop_value();
                     $c->el_id = $elId;
                     $c->prop_id = $p->id;
+                    $c->slug = \Str::slug($p->name."-".$item);
                     $c->value_id = ++$count;
                     if ($p->is_number) {
                         $c->value_number = (integer)$props[$p->name];

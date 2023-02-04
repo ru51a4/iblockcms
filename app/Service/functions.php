@@ -13,21 +13,4 @@ class functions
         }
         return [];
     }
-
-    public static function getParams()
-    {
-        $url = $_GET;
-        $urls = '?';
-        $count = 0;
-        foreach ($url as $key => $item) {
-            if (is_array($item)) {
-                foreach ($item as $q) {
-                    $urls .= ($count++ !== 0) ? "&" . htmlspecialchars($key)."[]" . "=" . htmlspecialchars($q) : htmlspecialchars($key)."[]" . "=" . htmlspecialchars($q);
-                }
-            } else {
-                $urls .= ($count++ !== 0) ? "&" . htmlspecialchars($key) . "=" . htmlspecialchars($item) : htmlspecialchars($key) . "=" . htmlspecialchars($item);
-            }
-        }
-        return $urls;
-    }
 }
