@@ -74,6 +74,9 @@
                                                                 max: {{ $prop->propvalue['max'] }},
                                                                 from: {{ $resParams['range'][$prop->id]['from'] }},
                                                                 to: {{ $resParams['range'][$prop->id]['to'] }},
+                                                                onChange: (e) => {
+                                                                    e.input[0].classList.add("dirty");
+                                                                },
                                                                 prefix: "",
                                                             });
                                                         </script>
@@ -86,6 +89,9 @@
                                                                 max: {{ $prop->propvalue['max'] }},
                                                                 from: {{ $prop->propvalue['min'] }},
                                                                 to: {{ $prop->propvalue['max'] }},
+                                                                onChange: (e) => {
+                                                                    e.input[0].classList.add("dirty");
+                                                                },
                                                                 prefix: "",
                                                             });
                                                         </script>
@@ -218,10 +224,9 @@
     function filter(e) {
         e.preventDefault();
         let items = e.target.querySelectorAll("input:checked");
-        console.log(items)
         let slugs = Array.from(items).map((item) => item.getAttribute("value"))
-        let range = e.target.querySelectorAll(".js-range-slider");
-        range = Array.from(range).map((item) => item.getAttribute("name") + "_" + item.value );
+        let range = e.target.querySelectorAll(".js-range-slider.dirty");
+        range = Array.from(range).map((item) => item.getAttribute("name") + "_" + item.value);
         let url = [`/catalog/{{ implode('/', $tree[$id]['slug']) }}`, "filter", ...slugs, ...range, "apply"].join("/");
         window.location.href = url;
 
