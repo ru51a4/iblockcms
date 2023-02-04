@@ -17,6 +17,7 @@ class CreateIblockPropValuesTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('value')->nullable();
+            $table->string('slug')->nullable();
             $table->integer('value_number')->nullable();
             $table->integer('value_id')->nullable();
             $table->unsignedBigInteger('prop_id');

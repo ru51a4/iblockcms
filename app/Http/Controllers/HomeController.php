@@ -31,9 +31,42 @@ class HomeController extends Controller
      */
     public function catalog(Request $request, $slug = "")
     {
+
+        $resParams = ["param"=>[]];
+        /*if ($request) {
+            $params = ($request->toArray());
+            $resParams["range"] = [];
+            foreach ($params as $key => $param) {
+                if (str_contains($key, "prop")) {
+                    $c = explode("_", $key);
+                    $resParams["param"][$c[1]] = $param;
+                }
+                if (str_contains($key, "range")) {
+                    $c = explode("_", $key);
+                    $cc = explode(";", $param);
+                    $resParams["range"][$c[1]]["from"] = $cc[0];
+                    $resParams["range"][$c[1]]["to"] = $cc[1];
+                }
+            }
+        }*/
+
+        $filter = [];
         if ($slug) {
             $slug = explode("/", $slug);
             $page = 1;
+            if (end($slug) == "apply") {
+                $filterParams = [];
+                $s = array_pop($slug);
+                while ($s !== 'filter') {
+                    $s = array_pop($slug);
+                    $filter[] = $s;
+                }
+                array_pop($filter);
+                foreach ($filter as $filterItem) {
+                    $filterItem = iblock_prop_value::where("slug", "=", $filterItem)->first();
+                    $resParams["param"][$filterItem->prop->id][] = $filterItem->id;
+                }
+            }
             if (is_numeric(end($slug))) {
                 $page = array_pop($slug);
             }
@@ -51,23 +84,7 @@ class HomeController extends Controller
             $page = 1;
             $id = 1;
         }
-        $resParams = [];
-        if ($request) {
-            $params = ($request->toArray());
-            $resParams["range"] = [];
-            foreach ($params as $key => $param) {
-                if (str_contains($key, "prop")) {
-                    $c = explode("_", $key);
-                    $resParams["param"][$c[1]] = $param;
-                }
-                if (str_contains($key, "range")) {
-                    $c = explode("_", $key);
-                    $cc = explode(";", $param);
-                    $resParams["range"][$c[1]]["from"] = $cc[0];
-                    $resParams["range"][$c[1]]["to"] = $cc[1];
-                }
-            }
-        }
+        
         $tree = Iblocks::treeToArray(Iblocks::SectionGetList(1));
         $els = Iblocks::ElementsGetListByIblockId($id, 5, $page, false, $resParams);
         $count = $els["count"];
@@ -100,7 +117,6 @@ class HomeController extends Controller
                 $prop->propvalue = ["min" => $min, "max" => $max];
             }
         }
-        $getParams = functions::getParams();
         //zhsmenu
         $zhsmenu = ["childrens" => []];
         $deep = function (&$c) use (&$deep) {
@@ -121,7 +137,7 @@ class HomeController extends Controller
         $zhsmenu["childrens"] = $zhsmenu["childrens"][0]["childrens"];
         $zhsmenu = json_encode($zhsmenu);
         //
-        return view('home', compact("tree", "count", "els", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "getParams", "zhsmenu"));
+        return view('home', compact("tree", "count", "els", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "zhsmenu", "filter"));
     }
 
     public function detail($id)
