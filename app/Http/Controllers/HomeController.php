@@ -32,22 +32,22 @@ class HomeController extends Controller
     public function catalog(Request $request, $slug = "")
     {
 
-        $resParams = ["param"=>[]];
+        $resParams = ["param" => [], "range" => []];
         /*if ($request) {
-            $params = ($request->toArray());
-            $resParams["range"] = [];
-            foreach ($params as $key => $param) {
-                if (str_contains($key, "prop")) {
-                    $c = explode("_", $key);
-                    $resParams["param"][$c[1]] = $param;
-                }
-                if (str_contains($key, "range")) {
-                    $c = explode("_", $key);
-                    $cc = explode(";", $param);
-                    $resParams["range"][$c[1]]["from"] = $cc[0];
-                    $resParams["range"][$c[1]]["to"] = $cc[1];
-                }
-            }
+        $params = ($request->toArray());
+        $resParams["range"] = [];
+        foreach ($params as $key => $param) {
+        if (str_contains($key, "prop")) {
+        $c = explode("_", $key);
+        $resParams["param"][$c[1]] = $param;
+        }
+        if (str_contains($key, "range")) {
+        $c = explode("_", $key);
+        $cc = explode(";", $param);
+        $resParams["range"][$c[1]]["from"] = $cc[0];
+        $resParams["range"][$c[1]]["to"] = $cc[1];
+        }
+        }
         }*/
 
         $filter = [];
@@ -63,8 +63,15 @@ class HomeController extends Controller
                 }
                 array_pop($filter);
                 foreach ($filter as $filterItem) {
-                    $filterItem = iblock_prop_value::where("slug", "=", $filterItem)->first();
-                    $resParams["param"][$filterItem->prop->id][] = $filterItem->id;
+                    if (str_contains($filterItem, "range")) {
+                        $c = explode("_", $filterItem);
+                        $cval = explode(";", $c[2]);
+                        $resParams["range"][$c[1]]["from"] = $cval[0];
+                        $resParams["range"][$c[1]]["to"] = $cval[1];
+                    } else {
+                        $filterItem = iblock_prop_value::where("slug", "=", $filterItem)->first();
+                        $resParams["param"][$filterItem->prop->id][] = $filterItem->id;
+                    }
                 }
             }
             if (is_numeric(end($slug))) {
@@ -84,7 +91,7 @@ class HomeController extends Controller
             $page = 1;
             $id = 1;
         }
-        
+
         $tree = Iblocks::treeToArray(Iblocks::SectionGetList(1));
         $els = Iblocks::ElementsGetListByIblockId($id, 5, $page, false, $resParams);
         $count = $els["count"];

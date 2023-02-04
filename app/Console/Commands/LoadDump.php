@@ -50,20 +50,23 @@ class LoadDump extends Command
                 $id = Iblocks::addSection(["name" => $value["name"]], 1);
                 $cc[$value["id"]] = $id;
             }
-        }*/
-            foreach ($data["catalog"][1]["products"] as $key => $value) {
-                foreach ($data["catalog"][0]["categories"] as $key => $svalue) {
-                    if ($svalue["id"] == $value["category_id"]) {
-                        $iblockId = iblock::where("name", "=", $svalue["name"])->first()->id;
-                        break;
-                    }
-                }
-                $res = [];
-                foreach ($value["features"] as $q) {
-                    $res[$q["name"]] = $q["value"];
-                }
-                Iblocks::addElement(["name" => $value["name"], "prop" => $res], $iblockId);
-            }
+        }
+        */
+        foreach ($data["catalog"][1]["products"] as $key => $value) {
+        foreach ($data["catalog"][0]["categories"] as $key => $svalue) {
+        if ($svalue["id"] == $value["category_id"]) {
+        $iblockId = iblock::where("name", "=", $svalue["name"])->first()->id;
+        break;
+        }
+        }
+        $res = [];
+        foreach ($value["features"] as $q) {
+        $res[$q["name"]] = $q["value"];
+        }
+        $res["price"] = random_int(100, 999);
+        Iblocks::addElement(["name" => $value["name"], "prop" => $res], $iblockId);
+        }
+        
 
         return 0;
     }

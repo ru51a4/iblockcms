@@ -220,7 +220,9 @@
         let items = e.target.querySelectorAll("input:checked");
         console.log(items)
         let slugs = Array.from(items).map((item) => item.getAttribute("value"))
-        let url = [`/catalog/{{ implode('/', $tree[$id]['slug']) }}`, "filter", ...slugs, "apply"].join("/");
+        let range = e.target.querySelectorAll(".js-range-slider");
+        range = Array.from(range).map((item) => item.getAttribute("name") + "_" + item.value );
+        let url = [`/catalog/{{ implode('/', $tree[$id]['slug']) }}`, "filter", ...slugs, ...range, "apply"].join("/");
         window.location.href = url;
 
     }
