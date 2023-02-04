@@ -63,8 +63,13 @@
                                         @else
                                             <li>
                                                 <div>
+                                                    @if (isset($resParams['range'][$prop->id]))
+                                                        <input type="text" class="dirty js-range-slider"
+                                                            name="range_{{ $prop->id }}" value="" />
+                                                    @else
                                                     <input type="text" class="js-range-slider"
-                                                        name="range_{{ $prop->id }}" value="" />
+                                                    name="range_{{ $prop->id }}" value="" />
+                                                    @endif
                                                     @if (isset($resParams['range'][$prop->id]))
                                                         <script>
                                                             $("[name=range_{{ $prop->id }}]").ionRangeSlider({
