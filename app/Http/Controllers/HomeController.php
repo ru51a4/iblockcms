@@ -31,67 +31,15 @@ class HomeController extends Controller
      */
     public function catalog(Request $request, $slug = "")
     {
-
-        $resParams = ["param" => [], "range" => []];
-        /*if ($request) {
-        $params = ($request->toArray());
-        $resParams["range"] = [];
-        foreach ($params as $key => $param) {
-        if (str_contains($key, "prop")) {
-        $c = explode("_", $key);
-        $resParams["param"][$c[1]] = $param;
+        $slug = functions::slugParse($slug);
+        $id = $slug["id"];
+        $resParams = $slug["resParams"];
+        $page = $slug["page"];
+        $filter = $slug["filter"];
+        $type = $slug["type"];
+        if ($type == "detail") {
+            return $this->detail($id);
         }
-        if (str_contains($key, "range")) {
-        $c = explode("_", $key);
-        $cc = explode(";", $param);
-        $resParams["range"][$c[1]]["from"] = $cc[0];
-        $resParams["range"][$c[1]]["to"] = $cc[1];
-        }
-        }
-        }*/
-
-        $filter = [];
-        if ($slug) {
-            $slug = explode("/", $slug);
-            $page = 1;
-            if (end($slug) == "apply") {
-                $filterParams = [];
-                $s = array_pop($slug);
-                while ($s !== 'filter') {
-                    $s = array_pop($slug);
-                    $filter[] = $s;
-                }
-                array_pop($filter);
-                foreach ($filter as $filterItem) {
-                    if (str_contains($filterItem, "range")) {
-                        $c = explode("_", $filterItem);
-                        $cval = explode(";", $c[2]);
-                        $resParams["range"][$c[1]]["from"] = $cval[0];
-                        $resParams["range"][$c[1]]["to"] = $cval[1];
-                    } else {
-                        $filterItem = iblock_prop_value::where("slug", "=", $filterItem)->first();
-                        $resParams["param"][$filterItem->prop->id][] = $filterItem->id;
-                    }
-                }
-            }
-            if (is_numeric(end($slug))) {
-                $page = array_pop($slug);
-            }
-            $id = array_pop($slug);
-            if (!empty($id)) {
-                $detailId = iblock_element::where("slug", "=", $id)->first();
-                if (!empty($detailId)) {
-                    return $this->detail($detailId->id);
-                }
-                $id = iblock::where("slug", "=", $id)->first()->id;
-            } else {
-                $id = 1;
-            }
-        } else {
-            $page = 1;
-            $id = 1;
-        }
-
         $tree = Iblocks::treeToArray(Iblocks::SectionGetList(1));
         $els = Iblocks::ElementsGetListByIblockId($id, 5, $page, false, $resParams);
         $count = $els["count"];
