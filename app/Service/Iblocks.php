@@ -58,7 +58,7 @@ class Iblocks
             $allPropValue = [];
             if (!empty($cAllProps)) {
                 foreach ($cAllProps as $id) {
-                    $c = iblock_prop_value::where("prop_id", "=", $id)->get()->unique("value");
+                    $c = iblock_prop_value::where("prop_id", "=", $id)->groupBy("value")->get();
                     foreach ($c as $item) {
                         $allPropValue[$item->prop_id][] = $item;
                     }
