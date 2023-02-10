@@ -86,7 +86,7 @@ class AdminController extends Controller
 
     public function addelement(Request $request, iblock $iblock)
     {
-        $props = $iblock->getPropWithParrents(true);
+        $props = $iblock->getPropWithParents(true);
         $cProps = [];
         foreach ($props as $prop) {
             $cProps[$prop->id] = $request->{$prop->id};
@@ -130,7 +130,7 @@ class AdminController extends Controller
     public function editelement(iblock_element $iblock_element, Request $request)
     {
         $iblock_element->name = $request->name;
-        $props = $iblock_element->iblock->getPropWithParrents();
+        $props = $iblock_element->iblock->getPropWithParents();
         $iblock_element->update();
         $c = [];
         foreach ($props as $p) {

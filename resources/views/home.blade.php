@@ -39,78 +39,80 @@
                 </ul>
             </div>
             <form onsubmit="filter(event)">
-                <div class="card" style="overflow: auto;max-height: 70vh;">
-                    <ul>
-                        @foreach ($allProps as $prop)
-                            @if (!empty($prop->propvalue))
-                                <li>
-                                    {{ $prop->name }}
-                                    <ul>
-                                        @if (!$prop->is_number)
-                                            @if (isset($allPropValue[$prop->id]))
-                                                @foreach ($allPropValue[$prop->id] as $value)
-                                                    <li>
-                                                        <div>
-                                                            <input type="checkbox"
-                                                                {{ isset($resParams['param'][$value->prop_id]) && in_array($value->id, $resParams['param'][$value->prop_id]) ? 'checked' : '' }}
-                                                                value="{{ $value->slug }}"
-                                                                name="prop_{{ $value->prop_id }}[]">
-                                                            <label for="scales">{{ $value->value }}</label>
-                                                        </div>
-                                                    </li>
-                                                @endforeach
+                @if (count($allProps) > 0)
+                    <div class="card" style="overflow: auto;max-height: 70vh;">
+                        <ul>
+                            @foreach ($allProps as $prop)
+                                @if (!empty($prop->propvalue))
+                                    <li>
+                                        {{ $prop->name }}
+                                        <ul>
+                                            @if (!$prop->is_number)
+                                                @if (isset($allPropValue[$prop->id]))
+                                                    @foreach ($allPropValue[$prop->id] as $value)
+                                                        <li>
+                                                            <div>
+                                                                <input type="checkbox"
+                                                                    {{ isset($resParams['param'][$value->prop_id]) && in_array($value->id, $resParams['param'][$value->prop_id]) ? 'checked' : '' }}
+                                                                    value="{{ $value->slug }}"
+                                                                    name="prop_{{ $value->prop_id }}[]">
+                                                                <label for="scales">{{ $value->value }}</label>
+                                                            </div>
+                                                        </li>
+                                                    @endforeach
+                                                @endif
+                                            @else
+                                                <li>
+                                                    <div>
+                                                        @if (isset($resParams['range'][$prop->id]))
+                                                            <input type="text" class="dirty js-range-slider"
+                                                                name="range_{{ $prop->id }}" value="" />
+                                                        @else
+                                                            <input type="text" class="js-range-slider"
+                                                                name="range_{{ $prop->id }}" value="" />
+                                                        @endif
+                                                        @if (isset($resParams['range'][$prop->id]))
+                                                            <script>
+                                                                $("[name=range_{{ $prop->id }}]").ionRangeSlider({
+                                                                    type: "double",
+                                                                    grid: true,
+                                                                    min: {{ $prop->propvalue['min'] }},
+                                                                    max: {{ $prop->propvalue['max'] }},
+                                                                    from: {{ $resParams['range'][$prop->id]['from'] }},
+                                                                    to: {{ $resParams['range'][$prop->id]['to'] }},
+                                                                    onChange: (e) => {
+                                                                        e.input[0].classList.add("dirty");
+                                                                    },
+                                                                    prefix: "",
+                                                                });
+                                                            </script>
+                                                        @else
+                                                            <script>
+                                                                $("[name=range_{{ $prop->id }}]").ionRangeSlider({
+                                                                    type: "double",
+                                                                    grid: true,
+                                                                    min: {{ $prop->propvalue['min'] }},
+                                                                    max: {{ $prop->propvalue['max'] }},
+                                                                    from: {{ $prop->propvalue['min'] }},
+                                                                    to: {{ $prop->propvalue['max'] }},
+                                                                    onChange: (e) => {
+                                                                        e.input[0].classList.add("dirty");
+                                                                    },
+                                                                    prefix: "",
+                                                                });
+                                                            </script>
+                                                        @endif
+                                                    </div>
+                                                </li>
                                             @endif
-                                        @else
-                                            <li>
-                                                <div>
-                                                    @if (isset($resParams['range'][$prop->id]))
-                                                        <input type="text" class="dirty js-range-slider"
-                                                            name="range_{{ $prop->id }}" value="" />
-                                                    @else
-                                                    <input type="text" class="js-range-slider"
-                                                    name="range_{{ $prop->id }}" value="" />
-                                                    @endif
-                                                    @if (isset($resParams['range'][$prop->id]))
-                                                        <script>
-                                                            $("[name=range_{{ $prop->id }}]").ionRangeSlider({
-                                                                type: "double",
-                                                                grid: true,
-                                                                min: {{ $prop->propvalue['min'] }},
-                                                                max: {{ $prop->propvalue['max'] }},
-                                                                from: {{ $resParams['range'][$prop->id]['from'] }},
-                                                                to: {{ $resParams['range'][$prop->id]['to'] }},
-                                                                onChange: (e) => {
-                                                                    e.input[0].classList.add("dirty");
-                                                                },
-                                                                prefix: "",
-                                                            });
-                                                        </script>
-                                                    @else
-                                                        <script>
-                                                            $("[name=range_{{ $prop->id }}]").ionRangeSlider({
-                                                                type: "double",
-                                                                grid: true,
-                                                                min: {{ $prop->propvalue['min'] }},
-                                                                max: {{ $prop->propvalue['max'] }},
-                                                                from: {{ $prop->propvalue['min'] }},
-                                                                to: {{ $prop->propvalue['max'] }},
-                                                                onChange: (e) => {
-                                                                    e.input[0].classList.add("dirty");
-                                                                },
-                                                                prefix: "",
-                                                            });
-                                                        </script>
-                                                    @endif
-                                                </div>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </li>
-                            @endif
-                        @endforeach
+                                        </ul>
+                                    </li>
+                                @endif
+                            @endforeach
 
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
+                @endif
                 @if (!empty($allProps))
                     <button class="btn btn-primary">filter</button>
                 @endif
