@@ -43,7 +43,6 @@
                     <div class="card" style="overflow: auto;max-height: 70vh;">
                         <ul>
                             @foreach ($allProps as $prop)
-                                @if (!empty($prop->propvalue))
                                     <li>
                                         {{ $prop->name }}
                                         <ul>
@@ -71,43 +70,12 @@
                                                             <input type="text" class="js-range-slider"
                                                                 name="range_{{ $prop->id }}" value="" />
                                                         @endif
-                                                        @if (isset($resParams['range'][$prop->id]))
-                                                            <script>
-                                                                $("[name=range_{{ $prop->id }}]").ionRangeSlider({
-                                                                    type: "double",
-                                                                    grid: true,
-                                                                    min: {{ $prop->propvalue['min'] }},
-                                                                    max: {{ $prop->propvalue['max'] }},
-                                                                    from: {{ $resParams['range'][$prop->id]['from'] }},
-                                                                    to: {{ $resParams['range'][$prop->id]['to'] }},
-                                                                    onChange: (e) => {
-                                                                        e.input[0].classList.add("dirty");
-                                                                    },
-                                                                    prefix: "",
-                                                                });
-                                                            </script>
-                                                        @else
-                                                            <script>
-                                                                $("[name=range_{{ $prop->id }}]").ionRangeSlider({
-                                                                    type: "double",
-                                                                    grid: true,
-                                                                    min: {{ $prop->propvalue['min'] }},
-                                                                    max: {{ $prop->propvalue['max'] }},
-                                                                    from: {{ $prop->propvalue['min'] }},
-                                                                    to: {{ $prop->propvalue['max'] }},
-                                                                    onChange: (e) => {
-                                                                        e.input[0].classList.add("dirty");
-                                                                    },
-                                                                    prefix: "",
-                                                                });
-                                                            </script>
-                                                        @endif
+                                                        
                                                     </div>
                                                 </li>
                                             @endif
                                         </ul>
                                     </li>
-                                @endif
                             @endforeach
 
                         </ul>

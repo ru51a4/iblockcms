@@ -46,6 +46,11 @@ class Iblocks
 
     public static function getAllProps($iblock, $values = false)
     {
+        $cacheKey = json_encode(["_props", $iblock, $values]);
+        $cCache = Cache::store('file')->get($cacheKey);
+        if (!empty($cCache)) {
+            return $cCache;  
+        }
         $res = [];
         foreach (self::getPropsParents(iblock::find($iblock)) as $c) {
             $res[] = $c;
@@ -64,8 +69,9 @@ class Iblocks
                     }
                 }
             }
+            Cache::store('file')->put($cacheKey, ["res" => $res, "values" => $allPropValue], 600);
             return ["res" => $res, "values" => $allPropValue];
-        }
+        } 
         //todo
         return $res;
         $deep = function ($childs) use (&$res, &$deep) {
@@ -113,7 +119,8 @@ class Iblocks
                     $query->where('prop_id', '=', $cProp->id)->where(function ($query) use ($cProp, $cond) {
                         $type = ($cProp->is_number) ? "value_number" : "value";
                         $query->where($type, $cond["type"], $cond["value"]);
-                    });
+                    }
+                    );
                 });
             }
         }
@@ -123,12 +130,14 @@ class Iblocks
                     $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
                         $param = array_map(function ($id) {
                             return iblock_prop_value::find($id)->value;
-                        }, $param);
+                        }
+                            , $param);
                         $query->where("value", '=', $param[0]);
                         for ($i = 1; $i <= count($param) - 1; $i++) {
                             $query->orWhere("value", '=', $param[$i]);
                         }
-                    });
+                    }
+                    );
                 });
             }
         }
@@ -138,7 +147,8 @@ class Iblocks
                     $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
                         $query->where("value_number", '>=', $param["from"]);
                         $query->where("value_number", '<=', $param["to"]);
-                    });
+                    }
+                    );
                 });
             }
         }
@@ -180,10 +190,12 @@ class Iblocks
             $c[$iblock->id]["key"] = $iblock->name;
             $c[$iblock->id]["path"] = array_map(function ($item) {
                 return $item->id;
-            }, $stack);
+            }
+                , $stack);
             $c[$iblock->id]["slug"] = array_map(function ($item) {
                 return $item->slug;
-            }, array_slice($stack, 1));
+            }
+                , array_slice($stack, 1));
             //
             $childs = $sectionTree->where("parent_id", "=", $iblock->id)->all();
             foreach ($childs as $child) {
@@ -280,9 +292,9 @@ class Iblocks
                     $p->prop_id = $prop->id;
                     $p->el_id = $el->id;
                     $p->value_id = ++$count;
-                    $p->slug = \Str::slug($prop->name."-".$item);
+                    $p->slug = \Str::slug($prop->name . "-" . $item);
                     if ($prop->is_number) {
-                        $p->value_number = (integer)$item;
+                        $p->value_number = (integer) $item;
                     } else {
                         $p->value = $item;
                     }
@@ -290,9 +302,9 @@ class Iblocks
                 }
             } else {
                 //
-                $p->slug = \Str::slug($prop->name."-".$obj["prop"][$id]);
+                $p->slug = \Str::slug($prop->name . "-" . $obj["prop"][$id]);
                 if ($prop->is_number) {
-                    $p->value_number = (integer)$obj["prop"][$id];
+                    $p->value_number = (integer) $obj["prop"][$id];
                 } else {
                     $p->value = $obj["prop"][$id];
                 }
@@ -330,10 +342,10 @@ class Iblocks
                         $c = new iblock_prop_value();
                         $c->el_id = $elId;
                         $c->prop_id = $p->id;
-                        $c->slug = \Str::slug($p->name."-".$item);
+                        $c->slug = \Str::slug($p->name . "-" . $item);
                         $c->value_id = ++$count;
                         if ($p->is_number) {
-                            $c->value_number = (integer)$item;
+                            $c->value_number = (integer) $item;
                         } else {
                             $c->value = $item;
                         }
@@ -344,10 +356,10 @@ class Iblocks
                     $c = new iblock_prop_value();
                     $c->el_id = $elId;
                     $c->prop_id = $p->id;
-                    $c->slug = \Str::slug($p->name."-".$item);
+                    $c->slug = \Str::slug($p->name . "-" . $item);
                     $c->value_id = ++$count;
                     if ($p->is_number) {
-                        $c->value_number = (integer)$props[$p->name];
+                        $c->value_number = (integer) $props[$p->name];
                     } else {
                         $c->value = $props[$p->name];
                     }

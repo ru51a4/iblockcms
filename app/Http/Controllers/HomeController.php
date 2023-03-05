@@ -59,17 +59,7 @@ class HomeController extends Controller
 
         foreach ($allProps as $prop) {
             if ($prop->is_number) {
-                $max = 0;
-                $min = 0;
-                foreach ($prop->propvalue as $p) {
-                    if ($p->value_number < $min) {
-                        $min = $p->value_number;
-                    }
-                    if ($p->value_number > $max) {
-                        $max = $p->value_number;
-                    }
-                }
-                $prop->propvalue = ["min" => $min, "max" => $max];
+                $prop->propvalue = ["min" => 0, "max" => 1000];
             }
         }
         //zhsmenu
