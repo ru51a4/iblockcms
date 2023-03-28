@@ -26,7 +26,6 @@ class functions
 
         //
         $filters = [];
-        $id = [];
         //
         if ($slug) {
             $slug = explode("/", $slug);
@@ -39,16 +38,17 @@ class functions
                 }
                 array_pop($filter);
             }
-            $page = 1;
+
 
             if (is_numeric(end($slug))) {
                 $page = array_pop($slug);
             }
-            $id = array_pop($slug);
         }
 
 
         if ($slug) {
+            $id = array_pop($slug);
+
             foreach ($filter as $filterItem) {
                 if (str_contains($filterItem, "range")) {
                     $c = explode("_", $filterItem);
@@ -61,7 +61,7 @@ class functions
                     $propsIds = array_map(function ($prop) {
                         return $prop->id;
                     }, $propsIds);
-                    $propsIds[]= $hackId;
+                    $propsIds[] = $hackId;
                     $filterItem = iblock_prop_value::whereHas('prop', function ($query) use ($propsIds) {
                         $query->whereIn("iblock_id", $propsIds);
                     })->where("slug", "=", $filterItem)->orderBy('id', 'desc')->first();
