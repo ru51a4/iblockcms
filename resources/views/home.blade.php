@@ -89,7 +89,7 @@
         </div>
         <div class="col-md-7">
             @if ($sectionIsset != 0)
-                <div class="mb-4">
+                <div class="mb-4 d-flex flex-wrap">
                     @foreach ($tree[$id] as $key => $el)
                         @if (isset($el['key']))
                             <div class="card col-2 p-3">
@@ -128,7 +128,10 @@
                                     <div class="p-2">
                                         <a
                                             href="/catalog/{{ implode('/', $tree[$el['iblock_id']]['slug']) }}/{{ $el['slug'] }}">{{ $el['name'] }}</a>
-                                        <ul>
+                                            <p>
+                                            <img style="width:100px" src="{{$el['prop']["DETAIL_PICTURE"]}}">
+                                            </p>
+                                            <ul>
                                             @foreach ($el['prop'] as $key => $prop)
                                                 @if (is_array($prop))
                                                     <li>{{ $key }}</li>

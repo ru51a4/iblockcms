@@ -44,7 +44,7 @@ class Iblocks
         return $res;
     }
 
-    public static function getAllProps($iblock, $values = false)
+    public static function getAllProps($iblock, $values = false, $is_admin = false)
     {
         $cacheKey = json_encode(["_props", $iblock, $values]);
         $cCache = Cache::store('file')->get($cacheKey);
@@ -52,7 +52,7 @@ class Iblocks
             return $cCache;  
         }
         $res = [];
-        foreach (self::getPropsParents(iblock::find($iblock)) as $c) {
+        foreach (self::getPropsParents(iblock::find($iblock), $is_admin) as $c) {
             $res[] = $c;
         }
         if ($values) {
@@ -253,7 +253,7 @@ class Iblocks
             if (empty($prop)) {
                 continue;
             }
-            $propsIds = self::getAllProps($iblockId, false);
+            $propsIds = self::getAllProps($iblockId, false, true);
             $propsIds = array_map(function ($prop) {
                 return $prop->id;
             }, $propsIds);

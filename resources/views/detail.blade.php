@@ -39,9 +39,9 @@
         <div class="col-md-7">
 
             <div class="card">
-                <div class="p-2 d-flex flex-row justify-content-start">
+                <div class="p-2 justify-content-start">
                     <div>
-                        <img src="http://ufland.moy.su/camera_a.gif">
+                        <img src="{{$el["prop"]["DETAIL_PICTURE"]}}" style="width:300px;">
                     </div>
                     <div class="mx-5">
                         <h6>{{$el["name"]}}</h6>

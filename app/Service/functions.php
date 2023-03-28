@@ -23,6 +23,11 @@ class functions
         $page = [];
         $filter = [];
         $resParams = ["param" => [], "range" => []];
+
+        //
+        $filters = [];
+        $id = [];
+        //
         if ($slug) {
             $slug = explode("/", $slug);
             $page = 1;
@@ -33,22 +38,36 @@ class functions
                     $filter[] = $s;
                 }
                 array_pop($filter);
-                foreach ($filter as $filterItem) {
-                    if (str_contains($filterItem, "range")) {
-                        $c = explode("_", $filterItem);
-                        $cval = explode(";", $c[2]);
-                        $resParams["range"][$c[1]]["from"] = $cval[0];
-                        $resParams["range"][$c[1]]["to"] = $cval[1];
-                    } else {
-                        $filterItem = iblock_prop_value::where("slug", "=", $filterItem)->orderBy('id', 'desc')->first();
-                        $resParams["param"][$filterItem->prop->id][] = $filterItem->id;
-                    }
-                }
             }
+            $page = 1;
+
             if (is_numeric(end($slug))) {
                 $page = array_pop($slug);
             }
             $id = array_pop($slug);
+        }
+
+
+        if ($slug) {
+            foreach ($filter as $filterItem) {
+                if (str_contains($filterItem, "range")) {
+                    $c = explode("_", $filterItem);
+                    $cval = explode(";", $c[2]);
+                    $resParams["range"][$c[1]]["from"] = $cval[0];
+                    $resParams["range"][$c[1]]["to"] = $cval[1];
+                } else {
+                    $hackId = iblock::where("slug", "=", $id)->first()->id;
+                    $propsIds = Iblocks::getAllProps($hackId, false, true);
+                    $propsIds = array_map(function ($prop) {
+                        return $prop->id;
+                    }, $propsIds);
+                    $propsIds[]= $hackId;
+                    $filterItem = iblock_prop_value::whereHas('prop', function ($query) use ($propsIds) {
+                        $query->whereIn("iblock_id", $propsIds);
+                    })->where("slug", "=", $filterItem)->orderBy('id', 'desc')->first();
+                    $resParams["param"][$filterItem->prop->id][] = $filterItem->id;
+                }
+            }
             if (!empty($id)) {
                 $detailId = iblock_element::where("slug", "=", $id)->first();
                 if (!empty($detailId)) {
