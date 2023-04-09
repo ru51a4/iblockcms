@@ -99,6 +99,7 @@ class LoadDump extends Command
                         }
                     }
                     $res["DETAIL_PICTURE"] = $_item["Fields"]["DETAIL_PICTURE"];
+                    $res["photo"] = $_item["PHOTO"];
                     $iblockId = iblock::where("name", "=", $item["NAME"])->first()->id;
                     Iblocks::addElement(["name" => $_item["Fields"]["NAME"], "prop" => $res], $iblockId);
 

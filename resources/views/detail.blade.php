@@ -41,7 +41,49 @@
             <div class="card">
                 <div class="p-2 justify-content-start">
                     <div>
+                        @if(!empty($el["prop"]["photo"]))
+                        <div id="slider" data-slick='{"slidesToShow": 1, "slidesToScroll": 1, "appendArrows" : ""}'>
+                            @foreach ($el["prop"]["photo"] as $url)
+                            <div><img src="{{$url}}" style="width:300px;">
+                            </div>       
+                            @endforeach
+                          </div>
+                          <script>
+                            $("#slider").slick({
+
+                            // normal options...
+                            infinite: true,
+                            dots: true,
+                            adaptiveHeight: true,
+                            // the magic
+                            responsive: [{
+
+                                breakpoint: 1024,
+                                settings: {
+                                slidesToShow: 3,
+                                infinite: true
+                                }
+
+                            }, {
+
+                                breakpoint: 600,
+                                settings: {
+                                slidesToShow: 2,
+                                dots: true
+                                }
+
+                            }, {
+
+                                breakpoint: 300,
+                                settings: "unslick" // destroys slick
+
+                            }]
+                            });
+
+                          </script>
+                          @else
                         <img src="{{$el["prop"]["DETAIL_PICTURE"]}}" style="width:300px;">
+                          @endif
                     </div>
                     <div class="mx-5">
                         <h6>{{$el["name"]}}</h6>
