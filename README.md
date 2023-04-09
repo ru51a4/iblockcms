@@ -1,4 +1,4 @@
-my iblock implementation (like bitrix cms)    
+my iblock implementation
 iblock:  
 &nbsp;&nbsp;&nbsp;id name parent_id left right depth   
 iblock_elements:  
