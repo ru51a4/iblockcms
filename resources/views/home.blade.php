@@ -40,7 +40,7 @@
             </div>
             <form onsubmit="filter(event)">
                 @if (count($allProps) > 0)
-                    <div class="card" style="overflow: auto;max-height: 70vh;">
+                    <div class="card mt-4" style="overflow: auto;max-height: 70vh;">
                         <ul>
                             @foreach ($allProps as $prop)
                                     <li>
@@ -82,7 +82,7 @@
                     </div>
                 @endif
                 @if (!empty($allProps))
-                    <button class="btn btn-primary">filter</button>
+                    <button class="mt-4 btn btn-primary">filter</button>
                 @endif
             </form>
 
