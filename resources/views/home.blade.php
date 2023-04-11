@@ -43,39 +43,39 @@
                     <div class="card mt-4" style="overflow: auto;max-height: 70vh;">
                         <ul>
                             @foreach ($allProps as $prop)
-                                    <li>
-                                        {{ $prop->name }}
-                                        <ul>
-                                            @if (!$prop->is_number)
-                                                @if (isset($allPropValue[$prop->id]))
-                                                    @foreach ($allPropValue[$prop->id] as $value)
-                                                        <li>
-                                                            <div>
-                                                                <input type="checkbox"
-                                                                    {{ isset($resParams['param'][$value->prop_id]) && in_array($value->id, $resParams['param'][$value->prop_id]) ? 'checked' : '' }}
-                                                                    value="{{ $value->slug }}"
-                                                                    name="prop_{{ $value->prop_id }}[]">
-                                                                <label for="scales">{{ $value->value }}</label>
-                                                            </div>
-                                                        </li>
-                                                    @endforeach
-                                                @endif
-                                            @else
-                                                <li>
-                                                    <div>
-                                                        @if (isset($resParams['range'][$prop->id]))
-                                                            <input type="text" class="dirty js-range-slider"
-                                                                name="range_{{ $prop->id }}" value="" />
-                                                        @else
-                                                            <input type="text" class="js-range-slider"
-                                                                name="range_{{ $prop->id }}" value="" />
-                                                        @endif
-                                                        
-                                                    </div>
-                                                </li>
+                                <li>
+                                    {{ $prop->name }}
+                                    <ul>
+                                        @if (!$prop->is_number)
+                                            @if (isset($allPropValue[$prop->id]))
+                                                @foreach ($allPropValue[$prop->id] as $value)
+                                                    <li>
+                                                        <div>
+                                                            <input type="checkbox"
+                                                                {{ isset($resParams['param'][$value->prop_id]) && in_array($value->id, $resParams['param'][$value->prop_id]) ? 'checked' : '' }}
+                                                                value="{{ $value->slug }}"
+                                                                name="prop_{{ $value->prop_id }}[]">
+                                                            <label for="scales">{{ $value->value }}</label>
+                                                        </div>
+                                                    </li>
+                                                @endforeach
                                             @endif
-                                        </ul>
-                                    </li>
+                                        @else
+                                            <li>
+                                                <div>
+                                                    @if (isset($resParams['range'][$prop->id]))
+                                                        <input type="text" class="dirty js-range-slider"
+                                                            name="range_{{ $prop->id }}" value="" />
+                                                    @else
+                                                        <input type="text" class="js-range-slider"
+                                                            name="range_{{ $prop->id }}" value="" />
+                                                    @endif
+
+                                                </div>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </li>
                             @endforeach
 
                         </ul>
@@ -128,20 +128,23 @@
                                     <div class="p-2">
                                         <a
                                             href="/catalog/{{ implode('/', $tree[$el['iblock_id']]['slug']) }}/{{ $el['slug'] }}">{{ $el['name'] }}</a>
-                                            <p>
-                                            <img style="width:100px" src="{{$el['prop']["DETAIL_PICTURE"]}}">
-                                            </p>
-                                            <ul>
+                                        <p>
+                                            <img style="width:100px" src="{{ $el['prop']['DETAIL_PICTURE'] }}">
+                                        </p>
+                                        <ul>
                                             @foreach ($el['prop'] as $key => $prop)
-                                                @if (is_array($prop))
-                                                    <li>{{ $key }}</li>
-                                                    <select>
-                                                        @foreach ($prop as $key => $prop)
-                                                            <option>{{ $prop }}</option>
-                                                        @endforeach
-                                                    </select>
+                                                @if ($key == 'DETAIL_PICTURE' || $key == 'photo')
                                                 @else
-                                                    <li>{{ $key }} - {{ $prop }}</li>
+                                                    @if (is_array($prop))
+                                                        <li>{{ $key }}</li>
+                                                        <select>
+                                                            @foreach ($prop as $key => $prop)
+                                                                <option>{{ $prop }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    @else
+                                                        <li>{{ $key }} - {{ $prop }}</li>
+                                                    @endif
                                                 @endif
                                             @endforeach
                                         </ul>

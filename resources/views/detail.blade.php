@@ -45,49 +45,130 @@
                     <div>
                         @if (!empty($el['prop']['photo']))
                             <style>
+                                .swiper {
+                                    width: 100%;
+                                    height: 100%;
+                                }
+
                                 .swiper-slide {
+                                    text-align: center;
+                                    font-size: 18px;
+                                    background: #fff;
                                     display: flex;
                                     justify-content: center;
-                                    transition: all .4s ease;
-                                }
-                                .swiper-wrapper{
                                     align-items: center;
                                 }
 
-                            </style>
-                            <div id="slider" data-slick='{"slidesToShow": 1, "slidesToScroll": 1, "appendArrows" : ""}'>
+                                .swiper-slide img {
+                                    display: block;
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: cover;
+                                }
 
-                                <div class="swiper">
-                                    <!-- Additional required wrapper -->
+                                .zaeb{
+                                    width: 400px;
+                                }
+                                .swiper {
+                                    width: 100%;
+                                    height: 300px;
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                }
+
+                                .swiper-slide {
+                                    background-size: cover;
+                                    background-position: center;
+                                }
+
+                                .mySwiper2 {
+                                    height: 80%;
+                                    width: 100%;
+                                    border: 1px solid black;
+                                }
+
+                                .mySwiper2 .swiper-slide {
+                                    height: 300px;
+                                    background-size: auto!important;
+                                    background-repeat: no-repeat!important;
+                                    background-position: center center!important;
+                                }
+
+                                .mySwiper {
+                                    height: 20%;
+                                    box-sizing: border-box;
+                                    padding: 10px 0;
+                                }
+
+                                .mySwiper .swiper-slide {
+                                    height: 100px;
+                                    background-size: contain!important;
+                                    background-repeat: no-repeat!important;
+                                    background-position: center center!important;
+                                    opacity: 0.4;
+                                    border: 1px solid black;
+                                }
+
+                                .mySwiper .swiper-slide-thumb-active {
+                                    opacity: 1;
+                                }
+
+                                .swiper-slide img {
+                                    display: block;
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: cover;
+                                }
+                                .swiper-button-next{
+                                    color:black;
+                                }
+                                .swiper-button-prev{
+                                    color:black;
+                                }
+                            </style>
+                            <div class="zaeb">
+                                <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff"
+                                    class="swiper mySwiper2">
                                     <div class="swiper-wrapper">
+
                                         @foreach ($el['prop']['photo'] as $url)
-                                            <div class="swiper-slide"><img src="{{ $url }}">
+                                            <div class="swiper-slide" style="background: url({{ $url }}); ">
                                             </div>
                                         @endforeach
+                                        
 
                                     </div>
-                                    <!-- If we need pagination -->
-                                    <div class="swiper-pagination"></div>
-
-                                    <!-- If we need navigation buttons -->
-                                    <div class="swiper-button-prev"></div>
                                     <div class="swiper-button-next"></div>
-
-                                    <!-- If we need scrollbar -->
-                                    <div class="swiper-scrollbar"></div>
+                                    <div class="swiper-button-prev"></div>
                                 </div>
+                                <div thumbsSlider="" class="swiper mySwiper">
+                                    <div class="swiper-wrapper">
 
-
+                                        @foreach ($el['prop']['photo'] as $url)
+                                        <div class="swiper-slide" style="background: url({{ $url }}); ">
+                                        </div>
+                                        @endforeach
+                                        
+                                    </div>
+                                </div>
                             </div>
                             <script>
-                                var swiper = new Swiper(".swiper", {
-                                    pagination: {
-                                        el: ".swiper-pagination",
-                                        type: "progressbar",
-                                    },
+                                var swiper = new Swiper(".mySwiper", {
+                                    loop: true,
+                                    spaceBetween: 10,
+                                    slidesPerView: 4,
+                                    freeMode: true,
+                                    watchSlidesProgress: true,
+                                });
+                                var swiper2 = new Swiper(".mySwiper2", {
+                                    loop: true,
+                                    spaceBetween: 10,
                                     navigation: {
                                         nextEl: ".swiper-button-next",
                                         prevEl: ".swiper-button-prev",
+                                    },
+                                    thumbs: {
+                                        swiper: swiper,
                                     },
                                 });
                             </script>
@@ -99,15 +180,18 @@
                         <h6>{{ $el['name'] }}</h6>
                         <ul>
                             @foreach ($el['prop'] as $key => $prop)
-                                @if (is_array($prop))
-                                    <li>{{ $key }}</li>
-                                    <select>
-                                        @foreach ($prop as $key => $prop)
-                                            <option>{{ $prop }}</option>
-                                        @endforeach
-                                    </select>
+                                @if ($key == 'DETAIL_PICTURE' || $key == 'photo')
                                 @else
-                                    <li>{{ $key }} - {{ $prop }}</li>
+                                    @if (is_array($prop))
+                                        <li>{{ $key }}</li>
+                                        <select>
+                                            @foreach ($prop as $key => $prop)
+                                                <option>{{ $prop }}</option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <li>{{ $key }} - {{ $prop }}</li>
+                                    @endif
                                 @endif
                             @endforeach
                         </ul>
