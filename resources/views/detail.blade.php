@@ -101,7 +101,7 @@
                                 }
 
                                 .mySwiper .swiper-slide {
-                                    height: 100px;
+                                    height: 50px;
                                     background-size: contain!important;
                                     background-repeat: no-repeat!important;
                                     background-position: center center!important;
@@ -156,7 +156,7 @@
                                 var swiper = new Swiper(".mySwiper", {
                                     loop: true,
                                     spaceBetween: 10,
-                                    slidesPerView: 4,
+                                    slidesPerView: 8,
                                     freeMode: true,
                                     watchSlidesProgress: true,
                                 });
