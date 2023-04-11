@@ -89,7 +89,7 @@
 
                                 .mySwiper2 .swiper-slide {
                                     height: 300px;
-                                    background-size: auto!important;
+                                    background-size: contain!important;
                                     background-repeat: no-repeat!important;
                                     background-position: center center!important;
                                 }
