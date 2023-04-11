@@ -118,7 +118,9 @@
                     padding-left: 0;
                     /* Отступ слева в браузере Firefox, Safari, Chrome */
                 }
-            </style>
+            </style> 
+
+
             <div class="el">
                 <ul>
                     @if (!empty($els))
