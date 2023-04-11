@@ -6,7 +6,7 @@ iblock_properties:
 &nbsp;&nbsp;&nbsp;id is_number is_multy name iblock_id  
 iblock_prop_value:  
 &nbsp;&nbsp;&nbsp;id value value_id value_number prop_id el_id  
-*фича*
+***фича***  
 store  
 id name adress  
 count_store  
