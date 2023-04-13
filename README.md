@@ -10,7 +10,7 @@ iblock_prop_value:
 store  
 id name adress  
 count_store  
-id store_id product_id prop_values_id count  
+id store_id product_id count  
 item_prop_values  
 id count_store_id prop_id value value_number
 
