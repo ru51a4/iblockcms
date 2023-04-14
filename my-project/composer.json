@@ -5,13 +5,13 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^7.4",
+        "php": "^8.1.18",
         "ext-pdo_sqlite": "*",
         "darkaonline/l5-swagger": "^8.4",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "laravel/framework": "8.40.0",
+        "laravel/framework": "^8.75",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.2",
         "tymon/jwt-auth": "^1.0"
