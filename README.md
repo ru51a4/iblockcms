@@ -15,3 +15,9 @@ item_prop_values
 id count_store_id prop_id value value_number
 
 demo - http://iblock.1123875-cc97019.tw1.ru/admin [ru51a4@mail.ru:12345678]
+   
+
+```
+sudo docker-compose run myapp php artisan migrate:refresh
+sudo docker-compose up
+```
