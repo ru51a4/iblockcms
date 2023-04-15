@@ -63,7 +63,7 @@ class functions
                     $propsIds[] = $hackId;
                     $filterItem = iblock_prop_value::whereHas('prop', function ($query) use ($propsIds) {
                         $query->whereIn("iblock_id", $propsIds);
-                    })->where("slug", "=", $filterItem)->orderBy('id', 'desc')->first();
+                    })->where("slug", "=", $filterItem)->first();
                     $resParams["param"][$filterItem->prop->id][] = $filterItem->id;
                     $resSlugParams["param"][$filterItem->prop->id][] = $filterItem->slug;
                 }
