@@ -52,7 +52,7 @@
                                                     <li>
                                                         <div>
                                                             <input type="checkbox"
-                                                                {{ isset($resParams['param'][$value->prop_id]) && in_array($value->id, $resParams['param'][$value->prop_id]) ? 'checked' : '' }}
+                                                                {{ isset($resSlugParams['param'][$value->prop_id]) && in_array($value->slug, $resSlugParams['param'][$value->prop_id]) ? 'checked' : '' }}
                                                                 value="{{ $value->slug }}"
                                                                 name="prop_{{ $value->prop_id }}[]">
                                                             <label for="scales">{{ $value->value }}</label>

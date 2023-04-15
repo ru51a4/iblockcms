@@ -34,6 +34,7 @@ class HomeController extends Controller
         $slug = functions::slugParse($slug);
         $id = $slug["id"];
         $resParams = $slug["resParams"];
+        $resSlugParams = $slug["resSlugParams"];
         $page = $slug["page"];
         $filter = $slug["filter"];
         $type = $slug["type"];
@@ -82,7 +83,7 @@ class HomeController extends Controller
         $zhsmenu["childrens"] = $zhsmenu["childrens"][0]["childrens"];
         $zhsmenu = json_encode($zhsmenu);
         //
-        return view('home', compact("tree", "count", "els", "id", "sectionIsset", "sectionsDetail", "allProps", "resParams", "allPropValue", "page", "zhsmenu", "filter"));
+        return view('home', compact("tree", "count", "els", "id", "sectionIsset", "sectionsDetail", "allProps", "resSlugParams", "resParams", "allPropValue", "page", "zhsmenu", "filter"));
     }
 
     public function detail($id)

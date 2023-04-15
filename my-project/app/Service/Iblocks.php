@@ -49,7 +49,7 @@ class Iblocks
         $cacheKey = json_encode(["_props", $iblock, $values]);
         $cCache = Cache::store('file')->get($cacheKey);
         if (!empty($cCache)) {
-            return $cCache;  
+        //    return $cCache;  
         }
         $res = [];
         foreach (self::getPropsParents(iblock::find($iblock), $is_admin) as $c) {
@@ -63,7 +63,7 @@ class Iblocks
             $allPropValue = [];
             if (!empty($cAllProps)) {
                 foreach ($cAllProps as $id) {
-                    $c = iblock_prop_value::where("prop_id", "=", $id)->groupBy("value")->get();
+                    $c = iblock_prop_value::where("prop_id", "=", $id)->groupBy("value")->orderBy("id","desc")->get();
                     foreach ($c as $item) {
                         $allPropValue[$item->prop_id][] = $item;
                     }

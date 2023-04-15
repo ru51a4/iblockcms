@@ -66,6 +66,7 @@ class functions
                         $query->whereIn("iblock_id", $propsIds);
                     })->where("slug", "=", $filterItem)->orderBy('id', 'desc')->first();
                     $resParams["param"][$filterItem->prop->id][] = $filterItem->id;
+                    $resSlugParams["param"][$filterItem->prop->id][] = $filterItem->slug;
                 }
             }
             if (!empty($id)) {
@@ -84,7 +85,7 @@ class functions
             $id = 1;
         }
 
-        return ["id" => $id, "page" => $page, "resParams" => $resParams, "filter" => $filter, "type" => $type];
+        return ["id" => $id, "page" => $page, "resParams" => $resParams, "resSlugParams" => $resSlugParams, "filter" => $filter, "type" => $type];
     }
 
 }
