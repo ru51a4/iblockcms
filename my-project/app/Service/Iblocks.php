@@ -49,7 +49,7 @@ class Iblocks
         $cacheKey = json_encode(["_props", $iblock, $values]);
         $cCache = Cache::store('file')->get($cacheKey);
         if (!empty($cCache)) {
-        //    return $cCache;  
+            return $cCache;
         }
         $res = [];
         foreach (self::getPropsParents(iblock::find($iblock), $is_admin) as $c) {
@@ -63,7 +63,7 @@ class Iblocks
             $allPropValue = [];
             if (!empty($cAllProps)) {
                 foreach ($cAllProps as $id) {
-                    $c = iblock_prop_value::where("prop_id", "=", $id)->groupBy("value")->orderBy("id","desc")->get();
+                    $c = iblock_prop_value::where("prop_id", "=", $id)->groupBy("value")->orderBy("id", "desc")->get();
                     foreach ($c as $item) {
                         $allPropValue[$item->prop_id][] = $item;
                     }
@@ -71,7 +71,7 @@ class Iblocks
             }
             Cache::store('file')->put($cacheKey, ["res" => $res, "values" => $allPropValue], 600);
             return ["res" => $res, "values" => $allPropValue];
-        } 
+        }
         //todo
         return $res;
         $deep = function ($childs) use (&$res, &$deep) {
@@ -116,10 +116,11 @@ class Iblocks
             foreach ($where as $cond) {
                 $els->whereHas('propvalue', function ($query) use ($cond) {
                     $cProp = iblock_property::where("name", "=", $cond["prop"])->first();
-                    $query->where('prop_id', '=', $cProp->id)->where(function ($query) use ($cProp, $cond) {
-                        $type = ($cProp->is_number) ? "value_number" : "value";
-                        $query->where($type, $cond["type"], $cond["value"]);
-                    }
+                    $query->where('prop_id', '=', $cProp->id)->where(
+                        function ($query) use ($cProp, $cond) {
+                            $type = ($cProp->is_number) ? "value_number" : "value";
+                            $query->where($type, $cond["type"], $cond["value"]);
+                        }
                     );
                 });
             }
@@ -127,16 +128,20 @@ class Iblocks
         if (isset($params["param"])) {
             foreach ($params["param"] as $id => $param) {
                 $els->whereHas('propvalue', function ($query) use ($id, $param) {
-                    $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
-                        $param = array_map(function ($id) {
-                            return iblock_prop_value::find($id)->value;
+                    $query->where("prop_id", "=", $id)->where(
+                        function ($query) use ($param) {
+                            $param = array_map(
+                                function ($id) {
+                                        return iblock_prop_value::find($id)->value;
+                                    }
+                                ,
+                                $param
+                            );
+                            $query->where("value", '=', $param[0]);
+                            for ($i = 1; $i <= count($param) - 1; $i++) {
+                                $query->orWhere("value", '=', $param[$i]);
+                            }
                         }
-                            , $param);
-                        $query->where("value", '=', $param[0]);
-                        for ($i = 1; $i <= count($param) - 1; $i++) {
-                            $query->orWhere("value", '=', $param[$i]);
-                        }
-                    }
                     );
                 });
             }
@@ -144,10 +149,11 @@ class Iblocks
         if (isset($params["range"])) {
             foreach ($params["range"] as $id => $param) {
                 $els->whereHas('propvalue', function ($query) use ($id, $param) {
-                    $query->where("prop_id", "=", $id)->where(function ($query) use ($param) {
-                        $query->where("value_number", '>=', $param["from"]);
-                        $query->where("value_number", '<=', $param["to"]);
-                    }
+                    $query->where("prop_id", "=", $id)->where(
+                        function ($query) use ($param) {
+                            $query->where("value_number", '>=', $param["from"]);
+                            $query->where("value_number", '<=', $param["to"]);
+                        }
                     );
                 });
             }
@@ -188,14 +194,20 @@ class Iblocks
         $sectionTree = $iblock->getChilds();
         $getChilds = function ($iblock, &$c) use (&$getChilds, &$stack, &$sectionTree) {
             $c[$iblock->id]["key"] = $iblock->name;
-            $c[$iblock->id]["path"] = array_map(function ($item) {
-                return $item->id;
-            }
-                , $stack);
-            $c[$iblock->id]["slug"] = array_map(function ($item) {
-                return $item->slug;
-            }
-                , array_slice($stack, 1));
+            $c[$iblock->id]["path"] = array_map(
+                function ($item) {
+                    return $item->id;
+                }
+                ,
+                $stack
+            );
+            $c[$iblock->id]["slug"] = array_map(
+                function ($item) {
+                    return $item->slug;
+                }
+                ,
+                array_slice($stack, 1)
+            );
             //
             $childs = $sectionTree->where("parent_id", "=", $iblock->id)->all();
             foreach ($childs as $child) {
