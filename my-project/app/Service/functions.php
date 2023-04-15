@@ -23,7 +23,7 @@ class functions
         $page = [];
         $filter = [];
         $resParams = ["param" => [], "range" => []];
-
+        $resSlugParams = [];
         //
         $filters = [];
         //
@@ -48,7 +48,6 @@ class functions
 
         if ($slug) {
             $id = array_pop($slug);
-
             foreach ($filter as $filterItem) {
                 if (str_contains($filterItem, "range")) {
                     $c = explode("_", $filterItem);
