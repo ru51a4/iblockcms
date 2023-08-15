@@ -56,6 +56,7 @@ class functions
                     $resParams["range"][$c[1]]["to"] = $cval[1];
                 } else {
                     $hackId = iblock::where("slug", "=", $id)->first()->id;
+
                     $propsIds = Iblocks::getAllProps($hackId, false, true);
                     $propsIds = array_map(function ($prop) {
                         return $prop->id;

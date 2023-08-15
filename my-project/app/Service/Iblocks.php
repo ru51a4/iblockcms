@@ -59,21 +59,21 @@ class Iblocks
             iblock::find($iblock)->getParents()->toArray()
         );
 
-        $systemProp = (!$is_admin) ? 'AND p.iblock_id <> 1' : '';
-        $res = \DB::select(
-            'SELECT * FROM iblock_properties p WHERE p.iblock_id in ( ' . implode(',', array_map(function () {
-                return "?";
-            }, $ids)) . ' )' . $systemProp,
-            [...$ids]
-        );
-
+        $res = '
+        SELECT * FROM iblock_properties p where 1=1
+            --*ids and p.iblock_id in (:@ids)
+            --*isAdmin AND p.iblock_id <> 1
+        ';
+        $params['ids'] = [$ids];
+        if (!$is_admin) {
+            $params['isAdmin'] = [true];
+        }
+        $res = \DB::select(sqlParser::prepare($res, $params));
         if ($values) {
-            $propsValues = \DB::select(
-                'SELECT * FROM iblock_properties p LEFT JOIN iblock_prop_values v ON p.id = v.prop_id WHERE p.iblock_id in ( ' . implode(',', array_map(function () {
-                    return "?";
-                }, $ids)) . ' ) ' . $systemProp . ' GROUP BY v.value',
-                [...$ids]
-            );
+            $sql = 'SELECT * FROM iblock_properties p JOIN iblock_prop_values v ON p.id = v.prop_id WHERE 1 = 1
+            --*ids AND p.iblock_id in (:@ids)
+            GROUP BY v.value';
+            $propsValues = \DB::select(sqlParser::prepare($sql, $params));
             $allPropValue = [];
             foreach ($propsValues as $item) {
                 $allPropValue[$item->prop_id][] = $item;
@@ -81,6 +81,7 @@ class Iblocks
             Cache::store('file')->put($cacheKey, ["res" => $res, "values" => $allPropValue], 600);
             return ["res" => $res, "values" => $allPropValue];
         }
+        return $res;
     }
 
     /*
