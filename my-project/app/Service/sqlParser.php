@@ -274,18 +274,15 @@ class sqlParser
 {
     static function select($sql, $param)
     {
-        //v params nujno polojit po ocheredi
         $parser = new Parser($sql, $param);
-        $param = $parser->getSimplifiedParams();
+        $_param = $parser->getSimplifiedParams();
+        $param = [];
         $sql = $parser->getSql();
-        $rParams = [];
-        foreach ($param as $key => $val) {
+        foreach ($_param as $key => $value) {
             if (str_contains($sql, $key)) {
-                $rParams[] = $val;
+                $param[$key] = $value;
             }
-            $sql = str_replace($key, "?", $sql);
-
         }
-        return \DB::select($sql, $rParams);
+        return \DB::select($sql, $param);
     }
 }
