@@ -49,49 +49,38 @@ class Iblocks
         $cacheKey = json_encode(["_props", $iblock, $values]);
         $cCache = Cache::store('file')->get($cacheKey);
         if (!empty($cCache)) {
-            return $cCache;
+            //return $cCache;
         }
         $res = [];
-        foreach (self::getPropsParents(iblock::find($iblock), $is_admin) as $c) {
-            $res[] = $c;
-        }
+        $ids = array_map(
+            function ($item) {
+                return $item['id'];
+            },
+            iblock::find($iblock)->getParents()->toArray()
+        );
+
+        $systemProp = (!$is_admin) ? 'AND p.iblock_id <> 1' : '';
+        $res = \DB::select(
+            'SELECT * FROM iblock_properties p WHERE p.iblock_id in ( ' . implode(',', array_map(function () {
+                return "?";
+            }, $ids)) . ' )' . $systemProp,
+            [...$ids]
+        );
+
         if ($values) {
-            $allProps = $res;
-            $cAllProps = array_map(function ($item) {
-                return $item->id;
-            }, $allProps);
+            $propsValues = \DB::select(
+                'SELECT * FROM iblock_properties p LEFT JOIN iblock_prop_values v ON p.id = v.prop_id WHERE p.iblock_id in ( ' . implode(',', array_map(function () {
+                    return "?";
+                }, $ids)) . ' ) ' . $systemProp . ' GROUP BY v.value',
+                [...$ids]
+            );
             $allPropValue = [];
-            if (!empty($cAllProps)) {
-                foreach ($cAllProps as $id) {
-                    $c = iblock_prop_value::where("prop_id", "=", $id)->groupBy("value")->orderBy("id", "desc")->get();
-                    foreach ($c as $item) {
-                        $allPropValue[$item->prop_id][] = $item;
-                    }
-                }
+            foreach ($propsValues as $item) {
+                $allPropValue[$item->prop_id][] = $item;
             }
             Cache::store('file')->put($cacheKey, ["res" => $res, "values" => $allPropValue], 600);
             return ["res" => $res, "values" => $allPropValue];
         }
-        //todo
-        return $res;
-        $deep = function ($childs) use (&$res, &$deep) {
-            foreach ($childs as $child) {
-                foreach ($child->properties as $prop) {
-                    $res[] = $prop;
-                }
-            }
-            foreach ($childs as $child) {
-                $c = iblock::where("parent_id", "=", $child->id)->get();
-                if (count($c)) {
-                    $deep($c);
-                }
-            }
-        };
-        $c = iblock::where("parent_id", "=", $iblock)->get();
-        if (count($c)) {
-            $deep($c);
-        }
-        return $res;
     }
 
     /*
@@ -132,8 +121,8 @@ class Iblocks
                         function ($query) use ($param) {
                             $param = array_map(
                                 function ($id) {
-                                        return iblock_prop_value::find($id)->value;
-                                    }
+                                    return iblock_prop_value::find($id)->value;
+                                }
                                 ,
                                 $param
                             );
