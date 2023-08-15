@@ -272,14 +272,20 @@ class Parser
 
 class sqlParser
 {
-    static function prepare($sql, $param)
+    static function select($sql, $param)
     {
+        //v params nujno polojit po ocheredi
         $parser = new Parser($sql, $param);
         $param = $parser->getSimplifiedParams();
         $sql = $parser->getSql();
+        $rParams = [];
         foreach ($param as $key => $val) {
-            $sql = str_replace($key, $val, $sql);
+            if (str_contains($sql, $key)) {
+                $rParams[] = $val;
+            }
+            $sql = str_replace($key, "?", $sql);
+
         }
-        return $sql;
+        return \DB::select($sql, $rParams);
     }
 }
