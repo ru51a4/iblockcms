@@ -1,11 +1,11 @@
 iblock:  
-&nbsp;&nbsp;&nbsp;id name parent_id left right depth   
+&nbsp;&nbsp;&nbsp;id name parent_id left right depth slug   
 iblock_elements:  
-&nbsp;&nbsp;&nbsp;id name iblock_id  
+&nbsp;&nbsp;&nbsp;id name iblock_id slug  
 iblock_properties:  
 &nbsp;&nbsp;&nbsp;id is_number is_multy name iblock_id  
 iblock_prop_value:  
-&nbsp;&nbsp;&nbsp;id value value_number prop_id el_id  
+&nbsp;&nbsp;&nbsp;id value value_number prop_id el_id slug   
 ***фича***  
 store  
 id name adress  
