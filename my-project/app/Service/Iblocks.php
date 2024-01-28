@@ -72,7 +72,7 @@ class Iblocks
         if ($values) {
             $sql = 'SELECT * FROM iblock_properties p JOIN iblock_prop_values v ON p.id = v.prop_id WHERE 1 = 1
             --*ids AND p.iblock_id in (:@ids)
-            GROUP BY v.value';
+            GROUP BY v.value, p.id';
             $propsValues = sqlParser::select($sql, $params);
             $allPropValue = [];
             foreach ($propsValues as $item) {
