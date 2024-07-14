@@ -14,7 +14,7 @@ id store_id product_id count
 item_prop_values  
 id count_store_id prop_id value value_number
 
-demo - http://iblock.1123875-cc97019.tw1.ru/admin [ru51a4@mail.ru:12345678]
+demo - http://188.120.245.72:8082/admin [ru51a4@mail.ru:12345678]
    
 
 ```
