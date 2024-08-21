@@ -23,13 +23,13 @@ class zhsmenu {
         while (queue.length) {
             let item = queue.shift();
             let displaynone = (cLvl > 1) ? 'display:none' : ''
-            let next = (item.childrens.length) ? "->" : "";
+            let next = (item.childrens.length) ? `<img style="width:10px;" src="arrow.svg">` : "";
             let url = item?.url?.length ? item?.url : '#';
             html += `
-                <div lvl="${cLvl}" data="${item.title}" parrent="${item.parrent}" style="${displaynone}" class="zhs-menu--items--item">
-                    <a href="${url}">
+                <div lvl="${cLvl}" data="${item.title}" parrent="${item.parrent}" style="min-width:180px;${displaynone}" class="zhs-menu--items--item">
+                    <a style="display:flex;" href="${url}">
                         ${item.title}
-                        ${next}
+                        <span style="margin-left:auto;">${next}</span>
                     </a>
                 </div>
                 `;
