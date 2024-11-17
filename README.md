@@ -21,3 +21,5 @@ demo - http://188.120.245.72:8082/admin [ru51a4@mail.ru:12345678]
 sudo docker-compose run myapp php artisan migrate:refresh
 sudo docker-compose up
 ```
+  
+support -> https://boosty.to/minimalreact
