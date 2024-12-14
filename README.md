@@ -22,4 +22,3 @@ sudo docker-compose run myapp php artisan migrate:refresh
 sudo docker-compose up
 ```
   
-support -> https://boosty.to/minimalreact
