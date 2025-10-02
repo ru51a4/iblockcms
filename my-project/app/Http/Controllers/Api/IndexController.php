@@ -68,7 +68,42 @@ class IndexController extends Controller
         $kek[$id] = $cTree[$id];
         return ["count" => $count, "tree" => $kek, "props" => $props, "els" => $cEls];
     }
+    
+     public function filter($id = 1, $page = 1, Request $request)
+    {
+        $tree = (Iblocks::SectionGetList($id));
+        //$where = $request->filter ? $request->filter : [];
+        $where = ['param' => [],"range"=>[]];
+        $where['param'] = $request->filter ?? [];
 
+        $els = Iblocks::ElementsGetListByIblockId($id, 5, $page, [], $where);
+        $count = $els["count"];
+        $cEls = $els["res"];
+
+        $props = Iblocks::getAllProps($id, true);
+        $cTree = $tree;
+        $deep = function (&$c, $id) use (&$cEls, &$deep) {
+            foreach ($c as $key => $value) {
+                if (is_numeric($key)) {
+                    $deep($c[$key], $key);
+                }
+            }
+            $c["sectionDetail"] = functions::getOpItem($id);
+        };
+        $deep($cTree[$id], $id);
+        $kek[$id] = $cTree[$id];
+        return ["count" => $count, "tree" => $kek, "props" => $props, "els" => $cEls];
+    }
+    
+    public function index2($str = ""){
+        $els = iblock_element::all();
+        foreach($els as $el){
+            if(str_contains(mb_strtolower($el->name), mb_strtolower($str))){
+                $ids[] = $el->id;
+            }
+        }
+        return Iblocks::ElementsGetList($ids);
+    }
     /**
      * @OA\Get(
      * path="/api/detail/{id}",
@@ -94,4 +129,23 @@ class IndexController extends Controller
     {
         return (Iblocks::ElementsGetList([$id])[0]);
     }
+
+    public function speedtest(Request $request)
+    {
+        $a = microtime(true);
+
+        $data = \DB::select( \DB::raw($request->sql));
+        $b = microtime(true);
+        return['data'=>$data, 'time'=>(($b - $a) * 1000)];
+
+    }
+    
+    public function getidbyslug(Request $request)
+    {
+        return iblock_element::where('slug', '=', $request->slug)->first()->id;
+
+    }
+
+    
+
 }

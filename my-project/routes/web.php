@@ -21,9 +21,14 @@ Route::get('/', function () {
 
 Route::post('/api/login', [\App\Http\Controllers\Api\ApiController::class, "authenticate"]);
 Route::post('/api/register', [\App\Http\Controllers\Api\ApiController::class, "register"]);
+Route::post('/api/mctime', [\App\Http\Controllers\Api\IndexController::class, "speedtest"]);
+Route::post('/api/getidbyslug', [\App\Http\Controllers\Api\IndexController::class, "getidbyslug"]);
 
 Route::get('/api/index/{id}/{page}', [\App\Http\Controllers\Api\IndexController::class, "index"]);
+Route::post('/api/filter/{id}/{page}', [\App\Http\Controllers\Api\IndexController::class, "filter"]);
+
 Route::get('/api/detail/{id}', [\App\Http\Controllers\Api\IndexController::class, "detail"]);
+Route::get('/api/index2/{str}', [\App\Http\Controllers\Api\IndexController::class, "index2"]);
 
 Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('/api/logout', [\App\Http\Controllers\Api\ApiController::class, "logout"]);
